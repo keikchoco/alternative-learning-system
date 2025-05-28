@@ -1,0 +1,181 @@
+'use client';
+
+import { useState } from 'react';
+import { Student, Barangay } from '@/types';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Pencil, Trash2 } from 'lucide-react';
+
+interface StudentTableProps {
+  students: Student[];
+  barangays: Barangay[];
+  onEdit: (student: Student) => void;
+  onDelete: (student: Student) => void;
+  onRowClick?: (student: Student) => void;
+}
+
+export function StudentTable({ students, barangays, onEdit, onDelete, onRowClick }: StudentTableProps) {
+  // State for sorting
+  const [sortField, setSortField] = useState<keyof Student>('name');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
+  // Handle sort
+  const handleSort = (field: keyof Student) => {
+    if (field === sortField) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  // Sort students
+  const sortedStudents = [...students].sort((a, b) => {
+    const aValue = a[sortField];
+    const bValue = b[sortField];
+
+    if (aValue === null) return sortDirection === 'asc' ? 1 : -1;
+    if (bValue === null) return sortDirection === 'asc' ? -1 : 1;
+
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      return sortDirection === 'asc'
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    }
+
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+    }
+
+    return 0;
+  });
+
+  // Get barangay name by ID
+  const getBarangayName = (id: string) => {
+    const barangay = barangays.find(b => b.id === id);
+    return barangay ? barangay.name : 'Unknown';
+  };
+
+  return (
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader className="bg-blue-600">
+          <TableRow>
+            <TableHead
+              className="text-white font-bold cursor-pointer"
+              onClick={() => handleSort('lrn')}
+            >
+              LRN
+              {sortField === 'lrn' && (
+                <span className="ml-1">{sortDirection === 'asc' ? '↑' : '↓'}</span>
+              )}
+            </TableHead>
+            <TableHead
+              className="text-white font-bold cursor-pointer"
+              onClick={() => handleSort('name')}
+            >
+              NAME
+              {sortField === 'name' && (
+                <span className="ml-1">{sortDirection === 'asc' ? '↑' : '↓'}</span>
+              )}
+            </TableHead>
+            <TableHead
+              className="text-white font-bold cursor-pointer"
+              onClick={() => handleSort('status')}
+            >
+              STATUS
+              {sortField === 'status' && (
+                <span className="ml-1">{sortDirection === 'asc' ? '↑' : '↓'}</span>
+              )}
+            </TableHead>
+            <TableHead
+              className="text-white font-bold cursor-pointer"
+              onClick={() => handleSort('gender')}
+            >
+              GENDER
+              {sortField === 'gender' && (
+                <span className="ml-1">{sortDirection === 'asc' ? '↑' : '↓'}</span>
+              )}
+            </TableHead>
+            <TableHead
+              className="text-white font-bold cursor-pointer"
+              onClick={() => handleSort('address')}
+            >
+              ADDRESS
+              {sortField === 'address' && (
+                <span className="ml-1">{sortDirection === 'asc' ? '↑' : '↓'}</span>
+              )}
+            </TableHead>
+            <TableHead className="text-white font-bold text-center">
+              ACTION
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {sortedStudents.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                No students found
+              </TableCell>
+            </TableRow>
+          ) : (
+            sortedStudents.map((student) => (
+              <TableRow
+                key={student.id}
+                className="cursor-pointer hover:bg-blue-50 transition-colors"
+                onClick={() => onRowClick?.(student)}
+              >
+                <TableCell className="font-medium">{student.lrn}</TableCell>
+                <TableCell>{student.name}</TableCell>
+                <TableCell>
+                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                    student.status === 'active'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}>
+                    {student.status.toUpperCase()}
+                  </span>
+                </TableCell>
+                <TableCell>{student.gender.toUpperCase()}</TableCell>
+                <TableCell>{student.address}</TableCell>
+                <TableCell className="text-center">
+                  <div className="flex justify-center space-x-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 text-green-600 border-green-600 hover:bg-green-50"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit(student);
+                      }}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 text-red-600 border-red-600 hover:bg-red-50"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(student);
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}

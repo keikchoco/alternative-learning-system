@@ -1,0 +1,42 @@
+[
+  {
+    "id": "module-1",
+    "title": "Basic Literacy (BLP)",
+    "levels": ["Basic Literate", "Neo Literate", "Post Literate"]
+  },
+  {
+    "id": "module-2",
+    "title": "Elementary Level Numeracy",
+    "levels": ["A&E Elementary"]
+  },
+  {
+    "id": "module-3",
+    "title": "Secondary Level Mathematics",
+    "levels": ["A&E Secondary"]
+  },
+  {
+    "id": "module-4",
+    "title": "Functional Literacy",
+    "levels": ["All Programs"]
+  },
+  {
+    "id": "module-5",
+    "title": "Communication Skills",
+    "levels": ["A&E Elementary", "A&E Secondary"]
+  },
+  {
+    "id": "module-6",
+    "title": "Problem Solving and Critical Thinking",
+    "levels": ["A&E Secondary"]
+  },
+  {
+    "id": "module-7",
+    "title": "Life Skills and Values",
+    "levels": ["All Programs"]
+  },
+  {
+    "id": "module-8",
+    "title": "Digital Literacy",
+    "levels": ["A&E Elementary", "A&E Secondary"]
+  }
+]

@@ -14,7 +14,7 @@ export const createBarangaySlice: StateCreator<
   StoreState,
   [['zustand/devtools', never], ['zustand/persist', unknown], ['zustand/immer', never]],
   [],
-  { barangays: BarangayState }
+  { barangays: any }
 > = (set, get) => ({
   barangays: {
     ...initialBarangayState,

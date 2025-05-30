@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { logStorageTestResults, testStorageAvailability } from '@/utils/storage-debug';
 import { authService } from '@/services/auth-service';
+import { CacheDebug } from '@/components/debug/cache-debug';
 
 export default function DebugPage() {
   const [storageResults, setStorageResults] = useState<any>(null);
@@ -159,6 +160,11 @@ export default function DebugPage() {
           </div>
         </div>
 
+        {/* Cache Debug Section */}
+        <div className="mt-6">
+          <CacheDebug />
+        </div>
+
         {/* Instructions */}
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mt-6">
           <h2 className="text-xl font-semibold mb-4 text-yellow-800">Debug Instructions</h2>
@@ -167,6 +173,8 @@ export default function DebugPage() {
             <p>2. Check if localStorage/sessionStorage are blocked by extensions</p>
             <p>3. Try the test login to see if fallback authentication works</p>
             <p>4. Compare results between normal browser and incognito mode</p>
+            <p>5. Use the Cache Debug section above to manage browser cache issues</p>
+            <p>6. In development, use <code>window.alsCache</code> in console for cache management</p>
           </div>
         </div>
       </div>

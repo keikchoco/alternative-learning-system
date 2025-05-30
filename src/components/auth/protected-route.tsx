@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { useAuthStore } from '@/store/auth-store';
+import { useAuthStoreState, useAuthStoreActions } from '@/store/auth-store';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -13,8 +13,8 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const pathname = usePathname();
   const [isInitialized, setIsInitialized] = useState(false);
   const [shouldRedirect, setShouldRedirect] = useState(false);
-  const isAuthenticated = useAuthStore(state => state.auth.isAuthenticated);
-  const initialize = useAuthStore(state => state.initialize);
+  const { isAuthenticated } = useAuthStoreState();
+  const { initialize } = useAuthStoreActions();
 
   // Initialize auth state
   useEffect(() => {

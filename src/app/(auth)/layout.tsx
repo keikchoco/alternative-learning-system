@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { useAuthStore } from '@/store/auth-store';
+import { useAuthStoreState, useAuthStoreActions } from '@/store/auth-store';
 
 export default function AuthLayout({
   children,
@@ -13,8 +13,8 @@ export default function AuthLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const isAuthenticated = useAuthStore(state => state.auth.isAuthenticated);
-  const initialize = useAuthStore(state => state.initialize);
+  const { isAuthenticated } = useAuthStoreState();
+  const { initialize } = useAuthStoreActions();
   const isRegisterPage = pathname === '/register';
 
   // Add loading state to prevent flash of login page

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth-store';
 import { ProtectedRoute } from '@/components/auth/protected-route';
+import { HeaderSearch } from '@/components/layout/header-search';
 import {
   LayoutDashboard,
   Users,
@@ -22,7 +23,7 @@ const commonNavItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Student Master List', href: '/students', icon: Users },
   { name: 'Map', href: '/map', icon: Map },
-  { name: 'Student Progress', href: '/progress', icon: LineChart },
+  { name: 'Student Score Summary', href: '/progress', icon: LineChart },
 ];
 
 // Navigation items only for master admin
@@ -187,18 +188,49 @@ export default function ProtectedLayout({
         {/* Main content */}
         <div className="flex-1 overflow-auto">
           <header className="bg-white shadow-sm">
-            <div className="px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
-              <h1 className="text-lg font-bold text-gray-800 uppercase">
-                {navItems.find(item => item.href === pathname)?.name || 'Dashboard'}
-              </h1>
+            <div className="px-4 py-4 sm:px-6 lg:px-8">
+              {/* Desktop Layout */}
+              <div className="hidden md:flex justify-between items-center">
+                <h1 className="text-lg font-bold text-gray-800 uppercase">
+                  {navItems.find(item => item.href === pathname)?.name || 'Dashboard'}
+                </h1>
 
-              <div className="flex items-center">
-                <div className="flex items-center">
-                  <span className="mr-2 text-sm font-medium text-gray-800">Hello!, {user?.name || 'Staff Name'}</span>
-                  <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600">
-                    <span className="text-xs">👤</span>
-                  </div>
+                <div className="flex items-center gap-4">
+                  {/* Header Search */}
+                  <HeaderSearch />
+
+                  {/* User Info - Only show on dashboard */}
+                  {pathname === '/dashboard' && (
+                    <div className="flex items-center">
+                      <span className="mr-2 text-sm font-medium text-gray-800">Hello!, {user?.name || 'Staff Name'}</span>
+                      <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600">
+                        <span className="text-xs">👤</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
+              </div>
+
+              {/* Mobile Layout */}
+              <div className="md:hidden space-y-3">
+                <div className="flex justify-between items-center">
+                  <h1 className="text-lg font-bold text-gray-800 uppercase">
+                    {navItems.find(item => item.href === pathname)?.name || 'Dashboard'}
+                  </h1>
+
+                  {/* User Info - Only show on dashboard */}
+                  {pathname === '/dashboard' && (
+                    <div className="flex items-center">
+                      <span className="mr-2 text-sm font-medium text-gray-800">Hello!, {user?.name || 'Staff Name'}</span>
+                      <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600">
+                        <span className="text-xs">👤</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Header Search */}
+                <HeaderSearch />
               </div>
             </div>
           </header>

@@ -119,6 +119,16 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Ensure all buttons have cursor pointer */
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  /* Ensure disabled buttons have not-allowed cursor */
+  button:disabled {
+    cursor: not-allowed;
+  }
 }
 
 /* React Big Calendar Custom Styles */
@@ -491,6 +501,52 @@
 /* Calendar day hover effects */
 .calendar-day {
   transition: all 0.2s ease-in-out;
+}
+
+/* Mobile responsive tabs styling */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Smooth scrolling for tabs on mobile */
+@media (max-width: 768px) {
+  .overflow-x-auto {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Hide scrollbar on mobile for cleaner look */
+  .overflow-x-auto::-webkit-scrollbar {
+    height: 3px;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.5);
+    border-radius: 3px;
+  }
 }
 
 .calendar-day:hover {

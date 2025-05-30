@@ -7,8 +7,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { registerSchema, RegisterFormValues } from '@/validators/auth-validators';
-import { useAuthStore } from '@/store/auth-store';
-import { useStore } from '@/store';
+import { useAuthStoreState, useAuthStoreActions } from '@/store/auth-store';
+import { useStoreState, useStoreActions } from '@/store';
 import { UserRole } from '@/types/auth';
 
 export function RegisterForm() {
@@ -16,15 +16,13 @@ export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Get auth store actions
-  const register = useAuthStore(state => state.register);
-  const isLoading = useAuthStore(state => state.auth.isLoading);
-  const error = useAuthStore(state => state.auth.error);
-  const clearError = useAuthStore(state => state.clearError);
+  // Get auth store actions and state
+  const { isLoading, error } = useAuthStoreState();
+  const { register, clearError } = useAuthStoreActions();
 
   // Get barangays from store
-  const barangays = useStore(state => state.barangays.data);
-  const loadBarangays = useStore(state => state.barangays.loadBarangays);
+  const { barangays } = useStoreState();
+  const { loadBarangays } = useStoreActions();
 
   // Load barangays on component mount
   useEffect(() => {

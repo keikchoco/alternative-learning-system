@@ -57,12 +57,6 @@ export function StudentTable({ students, barangays, onEdit, onDelete, onRowClick
     return 0;
   });
 
-  // Get barangay name by ID
-  const getBarangayName = (id: string) => {
-    const barangay = barangays.find(b => b.id === id);
-    return barangay ? barangay.name : 'Unknown';
-  };
-
   return (
     <div className="rounded-md border">
       <Table>
@@ -148,24 +142,24 @@ export function StudentTable({ students, barangays, onEdit, onDelete, onRowClick
                 <TableCell className="text-center">
                   <div className="flex justify-center space-x-2">
                     <Button
-                      variant="outline"
                       size="icon"
-                      className="h-8 w-8 text-green-600 border-green-600 hover:bg-green-50"
+                      className="h-8 w-8 bg-green-600 text-white hover:bg-green-700 border-0 cursor-pointer transition-all duration-200 hover:shadow-md rounded-md"
                       onClick={(e) => {
                         e.stopPropagation();
                         onEdit(student);
                       }}
+                      title="Edit Student"
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
                     <Button
-                      variant="outline"
                       size="icon"
-                      className="h-8 w-8 text-red-600 border-red-600 hover:bg-red-50"
+                      className="h-8 w-8 bg-red-600 text-white hover:bg-red-700 border-0 cursor-pointer transition-all duration-200 hover:shadow-md rounded-md"
                       onClick={(e) => {
                         e.stopPropagation();
                         onDelete(student);
                       }}
+                      title="Delete Student"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

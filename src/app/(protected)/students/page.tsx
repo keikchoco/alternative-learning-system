@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useStudentStore } from '@/store/student-store';
-import { useAuthStore } from '@/store/auth-store';
-import { Student, StudentFormValues } from '@/types';
+import { useAuthStoreState } from '@/store/auth-store';
+import { Student } from '@/types';
+import { StudentFormValues } from '@/validators/student-validators';
 
 // Components
 import { Button } from '@/components/ui/button';
 import { BarangayTabs } from '@/components/students/barangay-tabs';
 import { BarangayTabsSkeleton } from '@/components/students/barangay-tabs-skeleton';
-import { SearchBar } from '@/components/students/search-bar';
+
 import { StudentTable } from '@/components/students/student-table';
 import { StudentTableSkeleton } from '@/components/students/student-table-skeleton';
 import { StudentDialog } from '@/components/students/student-dialog';
@@ -19,18 +20,16 @@ import { Plus } from 'lucide-react';
 
 export default function StudentsPage() {
   // Get user from auth store
-  const user = useAuthStore(state => state.auth.user);
+  const { user } = useAuthStoreState();
 
   // Get student store state and actions
   const {
     students,
     barangays,
-    searchQuery,
     selectedBarangay,
     loadingBarangays,
     fetchStudents,
     fetchBarangays,
-    setSearchQuery,
     setSelectedBarangay,
     addStudent,
     editStudent,
@@ -57,7 +56,11 @@ export default function StudentsPage() {
   // Handle add student
   const handleAddStudent = async (data: StudentFormValues) => {
     try {
-      await addStudent(data);
+      await addStudent({
+        ...data,
+        assessment: data.assessment || '',
+        image: data.image || '/images/students/default-avatar.png'
+      });
     } catch (error) {
       console.error('Error adding student:', error);
     }
@@ -70,7 +73,9 @@ export default function StudentsPage() {
     try {
       await editStudent({
         ...data,
-        id: selectedStudent.id
+        id: selectedStudent.id,
+        assessment: data.assessment || '',
+        image: data.image || selectedStudent.image
       });
     } catch (error) {
       console.error('Error updating student:', error);
@@ -115,11 +120,6 @@ export default function StudentsPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h1 className="text-2xl font-bold tracking-tight">STUDENT MASTERLIST</h1>
-        <SearchBar
-          onSearch={setSearchQuery}
-          initialValue={searchQuery}
-          placeholder="Search students..."
-        />
       </div>
 
       {/* Barangay Tabs */}
@@ -154,7 +154,7 @@ export default function StudentsPage() {
       <div className="flex justify-end">
         <Button
           onClick={() => setAddDialogOpen(true)}
-          className="bg-green-600 hover:bg-green-700"
+          className="bg-green-600 hover:bg-green-500 cursor-pointer transition-all duration-200 hover:shadow-md"
         >
           <Plus className="mr-2 h-4 w-4" /> Add Student
         </Button>

@@ -151,9 +151,12 @@ export const calculateProgressStatistics = (progressRecords: Progress[]): Progre
   
   // Activity type distribution
   const activityTypeDistribution: Record<ActivityType, number> = {
+    'Assessment': 0,
     'Quiz': 0,
     'Assignment': 0,
-    'Activity': 0
+    'Activity': 0,
+    'Project': 0,
+    'Participation': 0
   };
   
   allActivities.forEach(activity => {

@@ -1,7 +1,7 @@
 import { StateCreator } from 'zustand';
 import { StoreState, ProgressState, Progress, Activity, ProgressFilters } from '@/types';
-import { 
-  fetchProgress, 
+import {
+  fetchProgress,
   createProgress as apiCreateProgress,
   updateProgress as apiUpdateProgress,
   deleteProgress as apiDeleteProgress
@@ -18,9 +18,12 @@ const initialProgressState: ProgressState = {
     completionRate: 0,
     moduleDistribution: {},
     activityTypeDistribution: {
+      'Assessment': 0,
       'Quiz': 0,
       'Assignment': 0,
-      'Activity': 0
+      'Activity': 0,
+      'Project': 0,
+      'Participation': 0
     }
   },
   loading: false,
@@ -32,7 +35,7 @@ export const createProgressSlice: StateCreator<
   StoreState,
   [['zustand/devtools', never], ['zustand/persist', unknown], ['zustand/immer', never]],
   [],
-  { progress: ProgressState }
+  { progress: any }
 > = (set, get) => ({
   progress: {
     ...initialProgressState,

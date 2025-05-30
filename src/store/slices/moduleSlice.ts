@@ -14,7 +14,7 @@ export const createModuleSlice: StateCreator<
   StoreState,
   [['zustand/devtools', never], ['zustand/persist', unknown], ['zustand/immer', never]],
   [],
-  { modules: ModuleState }
+  { modules: any }
 > = (set, get) => ({
   modules: {
     ...initialModuleState,

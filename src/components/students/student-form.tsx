@@ -349,13 +349,13 @@ export function StudentForm({ student, barangays, onSubmit, onCancel }: StudentF
             type="button"
             variant="outline"
             onClick={onCancel}
-            className="border-blue-200 text-blue-700 hover:bg-blue-50"
+            className="border-blue-200 text-blue-700 hover:bg-blue-50 cursor-pointer transition-all duration-200 hover:shadow-md"
           >
             Cancel
           </Button>
           <Button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-blue-600 hover:bg-blue-500 text-white cursor-pointer transition-all duration-200 hover:shadow-md"
           >
             {student ? 'Update Student' : 'Add Student'}
           </Button>

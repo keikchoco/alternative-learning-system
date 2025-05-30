@@ -24,6 +24,8 @@ export const studentSchema = z.object({
     })
   ]),
   assessment: z.string().optional(),
+  group: z.string().min(1, { message: "Group is required" }),
+  image: z.string().optional(),
 });
 
 // Type for the form values
@@ -53,4 +55,13 @@ export const statusOptions = [
 export const genderOptions = [
   { value: 'male', label: 'Male' },
   { value: 'female', label: 'Female' },
+];
+
+// Group options
+export const groupOptions = [
+  { value: 'A', label: 'Group A' },
+  { value: 'B', label: 'Group B' },
+  { value: 'C', label: 'Group C' },
+  { value: 'D', label: 'Group D' },
+  { value: 'E', label: 'Group E' },
 ];

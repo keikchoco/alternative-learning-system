@@ -31,7 +31,7 @@ export const createStudentSlice: StateCreator<
   StoreState,
   [['zustand/devtools', never], ['zustand/persist', unknown], ['zustand/immer', never]],
   [],
-  { students: StudentState }
+  { students: any }
 > = (set, get) => ({
   students: {
     ...initialStudentState,

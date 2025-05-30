@@ -1,42 +1,193 @@
 [
   {
     "id": "module-1",
-    "title": "Basic Literacy (BLP)",
-    "levels": ["Basic Literate", "Neo Literate", "Post Literate"]
+    "title": "Numeracy",
+    "levels": ["A&E Elementary"],
+    "predefinedActivities": [
+      {
+        "name": "Number Recognition (1-100)",
+        "type": "Assessment",
+        "total": 25,
+        "description": "Identify and write numbers from 1 to 100"
+      },
+      {
+        "name": "Basic Addition",
+        "type": "Assessment",
+        "total": 20,
+        "description": "Addition of single and double-digit numbers"
+      },
+      {
+        "name": "Basic Subtraction",
+        "type": "Assessment",
+        "total": 20,
+        "description": "Subtraction of single and double-digit numbers"
+      },
+      {
+        "name": "Multiplication Tables (1-10)",
+        "type": "Assessment",
+        "total": 30,
+        "description": "Memorization and application of multiplication tables"
+      },
+      {
+        "name": "Basic Division",
+        "type": "Assessment",
+        "total": 15,
+        "description": "Simple division problems without remainders"
+      },
+      {
+        "name": "Money and Measurement",
+        "type": "Assessment",
+        "total": 25,
+        "description": "Understanding Philippine currency and basic measurements"
+      }
+    ]
   },
   {
     "id": "module-2",
-    "title": "Elementary Level Numeracy",
-    "levels": ["A&E Elementary"]
+    "title": "Functional Literacy",
+    "levels": ["A&E Elementary"],
+    "predefinedActivities": [
+      {
+        "name": "Letter Recognition",
+        "type": "Assessment",
+        "total": 26,
+        "description": "Identify uppercase and lowercase letters"
+      },
+      {
+        "name": "Phonics and Sound Recognition",
+        "type": "Assessment",
+        "total": 20,
+        "description": "Associate letters with their sounds"
+      },
+      {
+        "name": "Basic Reading Comprehension",
+        "type": "Assessment",
+        "total": 25,
+        "description": "Read and understand simple sentences and paragraphs"
+      },
+      {
+        "name": "Vocabulary Building",
+        "type": "Assessment",
+        "total": 30,
+        "description": "Learn and use common Filipino and English words"
+      },
+      {
+        "name": "Basic Writing Skills",
+        "type": "Assessment",
+        "total": 20,
+        "description": "Write simple sentences and short paragraphs"
+      }
+    ]
   },
   {
     "id": "module-3",
-    "title": "Secondary Level Mathematics",
-    "levels": ["A&E Secondary"]
+    "title": "Communication Skills",
+    "levels": ["A&E Elementary"],
+    "predefinedActivities": [
+      {
+        "name": "Listening Comprehension",
+        "type": "Assessment",
+        "total": 25,
+        "description": "Understand spoken instructions and stories"
+      },
+      {
+        "name": "Speaking and Pronunciation",
+        "type": "Assessment",
+        "total": 20,
+        "description": "Express ideas clearly in Filipino and English"
+      },
+      {
+        "name": "Reading Aloud",
+        "type": "Assessment",
+        "total": 15,
+        "description": "Read texts with proper pronunciation and expression"
+      },
+      {
+        "name": "Written Communication",
+        "type": "Assessment",
+        "total": 25,
+        "description": "Write letters, messages, and simple reports"
+      },
+      {
+        "name": "Non-verbal Communication",
+        "type": "Assessment",
+        "total": 15,
+        "description": "Understand and use appropriate body language"
+      }
+    ]
   },
   {
     "id": "module-4",
-    "title": "Functional Literacy",
-    "levels": ["All Programs"]
+    "title": "Life Skills and Values",
+    "levels": ["A&E Elementary"],
+    "predefinedActivities": [
+      {
+        "name": "Personal Hygiene and Health",
+        "type": "Assessment",
+        "total": 20,
+        "description": "Practice proper hygiene and health habits"
+      },
+      {
+        "name": "Family and Community Values",
+        "type": "Assessment",
+        "total": 25,
+        "description": "Understand roles and responsibilities in family and community"
+      },
+      {
+        "name": "Environmental Awareness",
+        "type": "Assessment",
+        "total": 20,
+        "description": "Care for the environment and natural resources"
+      },
+      {
+        "name": "Basic Life Skills",
+        "type": "Assessment",
+        "total": 25,
+        "description": "Cooking, cleaning, and household management"
+      },
+      {
+        "name": "Values Formation",
+        "type": "Assessment",
+        "total": 20,
+        "description": "Develop honesty, respect, and responsibility"
+      }
+    ]
   },
   {
     "id": "module-5",
-    "title": "Communication Skills",
-    "levels": ["A&E Elementary", "A&E Secondary"]
-  },
-  {
-    "id": "module-6",
-    "title": "Problem Solving and Critical Thinking",
-    "levels": ["A&E Secondary"]
-  },
-  {
-    "id": "module-7",
-    "title": "Life Skills and Values",
-    "levels": ["All Programs"]
-  },
-  {
-    "id": "module-8",
     "title": "Digital Literacy",
-    "levels": ["A&E Elementary", "A&E Secondary"]
+    "levels": ["A&E Elementary"],
+    "predefinedActivities": [
+      {
+        "name": "Computer Basics",
+        "type": "Assessment",
+        "total": 20,
+        "description": "Basic computer operation and parts identification"
+      },
+      {
+        "name": "Internet Safety",
+        "type": "Assessment",
+        "total": 15,
+        "description": "Safe and responsible internet usage"
+      },
+      {
+        "name": "Basic Word Processing",
+        "type": "Assessment",
+        "total": 25,
+        "description": "Create and edit simple documents"
+      },
+      {
+        "name": "Digital Communication",
+        "type": "Assessment",
+        "total": 20,
+        "description": "Email and messaging etiquette"
+      },
+      {
+        "name": "Information Literacy",
+        "type": "Assessment",
+        "total": 20,
+        "description": "Find and evaluate online information"
+      }
+    ]
   }
 ]

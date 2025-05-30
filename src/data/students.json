@@ -11,7 +11,9 @@
     "enrollmentDate": "2024-08-08",
     "modality": "Face to Face",
     "pisScore": null,
-    "assessment": "Pending"
+    "assessment": "Pending",
+    "group": "A",
+    "image": "/images/students/default-avatar.png"
   },
   {
     "id": "student-2",
@@ -25,7 +27,9 @@
     "enrollmentDate": "2024-08-05",
     "modality": "Face to Face",
     "pisScore": null,
-    "assessment": "Pending"
+    "assessment": "Pending",
+    "group": "A",
+    "image": "/images/students/default-avatar.png"
   },
   {
     "id": "student-3",
@@ -39,7 +43,9 @@
     "enrollmentDate": "2024-08-06",
     "modality": "Face to Face",
     "pisScore": null,
-    "assessment": "Pending"
+    "assessment": "Pending",
+    "group": "B",
+    "image": "/images/students/default-avatar.png"
   },
   {
     "id": "student-4",
@@ -53,7 +59,9 @@
     "enrollmentDate": "2024-09-09",
     "modality": "Face to Face",
     "pisScore": null,
-    "assessment": "Pending"
+    "assessment": "Pending",
+    "group": "B",
+    "image": "/images/students/default-avatar.png"
   },
   {
     "id": "student-5",
@@ -67,7 +75,9 @@
     "enrollmentDate": "2024-08-07",
     "modality": "Face to Face",
     "pisScore": null,
-    "assessment": "Pending"
+    "assessment": "Pending",
+    "group": "A",
+    "image": "/images/students/default-avatar.png"
   },
   {
     "id": "student-6",
@@ -81,7 +91,9 @@
     "enrollmentDate": "2024-08-06",
     "modality": "Face to Face",
     "pisScore": 78,
-    "assessment": "Satisfactory"
+    "assessment": "Satisfactory",
+    "group": "B",
+    "image": "/images/students/default-avatar.png"
   },
   {
     "id": "student-7",
@@ -95,7 +107,9 @@
     "enrollmentDate": "2024-08-10",
     "modality": "Face to Face",
     "pisScore": 85,
-    "assessment": "Good"
+    "assessment": "Good",
+    "group": "A",
+    "image": "/images/students/default-avatar.png"
   },
   {
     "id": "student-8",
@@ -109,7 +123,9 @@
     "enrollmentDate": "2024-08-12",
     "modality": "Face to Face",
     "pisScore": 92,
-    "assessment": "Excellent"
+    "assessment": "Excellent",
+    "group": "B",
+    "image": "/images/students/default-avatar.png"
   },
   {
     "id": "student-9",
@@ -123,7 +139,9 @@
     "enrollmentDate": "2024-07-15",
     "modality": "Face to Face",
     "pisScore": 65,
-    "assessment": "Needs Improvement"
+    "assessment": "Needs Improvement",
+    "group": "C",
+    "image": "/images/students/default-avatar.png"
   },
   {
     "id": "student-10",
@@ -137,6 +155,24 @@
     "enrollmentDate": "2024-08-20",
     "modality": "Face to Face",
     "pisScore": 45,
-    "assessment": "Needs Improvement"
+    "assessment": "Needs Improvement",
+    "group": "A",
+    "image": "/images/students/default-avatar.png"
+  },
+  {
+    "id": "student-11",
+    "lrn": "12345",
+    "name": "DELA CRUZ, JUAN M.",
+    "status": "active",
+    "gender": "male",
+    "address": "Purok 1, Barangay 1 (POB.), Indang, Cavite",
+    "barangayId": "barangay-1",
+    "program": "ALS Level 2",
+    "enrollmentDate": "2024-08-15",
+    "modality": "Face to Face",
+    "pisScore": 88,
+    "assessment": "Good",
+    "group": "A",
+    "image": "/images/students/default-avatar.png"
   }
 ]

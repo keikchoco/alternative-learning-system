@@ -38,10 +38,18 @@ export function ConfirmationDialog({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            className="cursor-pointer transition-all duration-200 hover:shadow-md"
+          >
             Cancel
           </Button>
-          <Button variant="destructive" onClick={handleConfirm}>
+          <Button
+            variant="destructive"
+            onClick={handleConfirm}
+            className="cursor-pointer transition-all duration-200 hover:shadow-md"
+          >
             Confirm
           </Button>
         </DialogFooter>

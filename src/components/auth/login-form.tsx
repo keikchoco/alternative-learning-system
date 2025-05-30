@@ -6,18 +6,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { loginSchema, LoginFormValues } from '@/validators/auth-validators';
-import { useAuthStore } from '@/store/auth-store';
+import { useAuthStoreState, useAuthStoreActions } from '@/store/auth-store';
 
 export function LoginForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
-  // Get auth store actions
-  const login = useAuthStore(state => state.login);
-  const initialize = useAuthStore(state => state.initialize);
-  const isLoading = useAuthStore(state => state.auth.isLoading);
-  const error = useAuthStore(state => state.auth.error);
-  const clearError = useAuthStore(state => state.clearError);
+  // Get auth store actions and state
+  const { isLoading, error } = useAuthStoreState();
+  const { login, initialize, clearError } = useAuthStoreActions();
 
   // Initialize auth state when component mounts
   // We don't need to handle redirect here anymore as it's handled by the middleware and auth layout

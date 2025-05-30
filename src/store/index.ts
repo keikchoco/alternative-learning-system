@@ -3,6 +3,7 @@ import { devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { StoreState } from '@/types';
 import { AuthState } from '@/types/auth';
+import { CacheManager } from '@/utils/cache-manager';
 
 // Import store slices
 import { createStudentSlice } from './slices/students.slice';
@@ -11,10 +12,61 @@ import { createModuleSlice } from './slices/moduleSlice';
 import { createProgressSlice } from './slices/progressSlice';
 import { createAuthSlice } from './slices/auth-slice';
 
+// Store version for cache invalidation
+const STORE_VERSION = '1.1.0'; // Increment this when store structure changes
+const STORE_KEY = 'als-student-tracker';
+
 // Extended store state with auth
 interface ExtendedStoreState extends StoreState {
   auth: AuthState;
 }
+
+// Cache invalidation utility
+const clearIncompatibleCache = () => {
+  try {
+    const storedVersion = localStorage.getItem(`${STORE_KEY}-version`);
+    if (storedVersion !== STORE_VERSION) {
+      console.log('🔄 Store structure updated, clearing incompatible cache...');
+      console.log(`   Previous version: ${storedVersion || 'unknown'}`);
+      console.log(`   Current version: ${STORE_VERSION}`);
+
+      // Validate current cache before clearing
+      const validation = CacheManager.validateCache();
+      if (!validation.isValid) {
+        console.log('⚠️ Cache validation issues found:', validation.issues);
+      }
+
+      // Clear only store-related cache (preserve auth data)
+      CacheManager.clearStoreCache();
+
+      // Update the version
+      localStorage.setItem(`${STORE_KEY}-version`, STORE_VERSION);
+
+      console.log('✅ Cache cleared successfully');
+    } else {
+      // Even if versions match, validate cache integrity
+      const validation = CacheManager.validateCache();
+      if (!validation.isValid) {
+        console.log('⚠️ Cache integrity issues found, clearing cache:', validation.issues);
+        CacheManager.clearStoreCache();
+        localStorage.setItem(`${STORE_KEY}-version`, STORE_VERSION);
+      }
+    }
+  } catch (error) {
+    console.warn('⚠️ Could not clear cache:', error);
+    // If there's an error, try to clear everything as a last resort
+    try {
+      CacheManager.clearStoreCache();
+      localStorage.setItem(`${STORE_KEY}-version`, STORE_VERSION);
+      console.log('🧹 Performed emergency cache clear');
+    } catch (emergencyError) {
+      console.error('❌ Emergency cache clear failed:', emergencyError);
+    }
+  }
+};
+
+// Clear incompatible cache before creating store
+clearIncompatibleCache();
 
 // Create the store with all slices
 export const useStore = create<ExtendedStoreState>()(
@@ -29,17 +81,58 @@ export const useStore = create<ExtendedStoreState>()(
         ...createAuthSlice(...a),
       })),
       {
-        name: 'als-student-tracker',
+        name: STORE_KEY,
+        version: 1, // Zustand's built-in versioning
         // Only persist specific parts of the state
         partialize: (state) => ({
           students: {
-            filters: state.students.filters,
+            filters: state.students?.filters || {},
           },
           progress: {
-            filters: state.progress.filters,
+            filters: state.progress?.filters || {},
           },
           // Don't persist auth state here as it's handled by the auth service
         }),
+        // Handle migration for version changes
+        migrate: (persistedState: any, version: number) => {
+          console.log('🔄 Migrating store from version', version);
+
+          // If version is different, return a clean state
+          if (version !== 1) {
+            console.log('🧹 Returning clean state due to version mismatch');
+            return {
+              students: { filters: {} },
+              progress: { filters: {} },
+            };
+          }
+
+          // Ensure the persisted state has the expected structure
+          return {
+            students: {
+              filters: persistedState?.students?.filters || {},
+            },
+            progress: {
+              filters: persistedState?.progress?.filters || {},
+            },
+          };
+        },
+        // Add error handling for storage issues
+        onRehydrateStorage: () => {
+          return (state, error) => {
+            if (error) {
+              console.error('❌ Store rehydration failed:', error);
+              // Clear the problematic cache
+              try {
+                localStorage.removeItem(STORE_KEY);
+                console.log('🧹 Cleared problematic cache');
+              } catch (clearError) {
+                console.warn('⚠️ Could not clear cache:', clearError);
+              }
+            } else {
+              console.log('✅ Store rehydrated successfully');
+            }
+          };
+        },
       }
     )
   )

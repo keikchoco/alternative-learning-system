@@ -3,7 +3,7 @@ export type Status = 'active' | 'inactive';
 export type Gender = 'male' | 'female';
 export type Program = 'Basic Literacy (BLP)' | 'A&E Elementary' | 'A&E Secondary';
 export type Modality = 'Face to Face' | 'Online' | 'Blended';
-export type ActivityType = 'Quiz' | 'Assignment' | 'Activity';
+export type ActivityType = 'Quiz' | 'Assignment' | 'Activity' | 'Project' | 'Participation' | 'Assessment';
 export type EventType = 'orientation' | 'assessment' | 'workshop' | 'lesson';
 export type EventStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
 
@@ -39,6 +39,16 @@ export interface Student {
   modality: Modality;
   pisScore: number | null;
   assessment: string;
+  group: string; // Group assignment (A, B, C, etc.)
+  image: string; // Profile image path
+}
+
+// Predefined Activity Interface
+export interface PredefinedActivity {
+  name: string;
+  type: ActivityType;
+  total: number;
+  description: string;
 }
 
 // Module Interface
@@ -46,6 +56,7 @@ export interface Module {
   id: string;
   title: string;
   levels: string[];
+  predefinedActivities?: PredefinedActivity[];
 }
 
 // Activity Interface

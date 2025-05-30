@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { subscribeWithSelector } from 'zustand/middleware';
+import { useMemo } from 'react';
 import { AuthState, LoginCredentials, RegisterCredentials } from '@/types/auth';
 import { authService } from '@/services/auth-service';
 import { logStorageTestResults } from '@/utils/storage-debug';
@@ -22,7 +24,8 @@ export const useAuthStore = create<{
   logout: () => Promise<void>;
   clearError: () => void;
 }>()(
-  immer((set) => ({
+  subscribeWithSelector(
+    immer((set) => ({
     auth: initialAuthState,
 
     // Initialize auth state from storage
@@ -162,4 +165,38 @@ export const useAuthStore = create<{
       });
     }
   }))
+  )
 );
+
+// Stable selector hooks to prevent infinite loops
+export const useAuthStoreActions = () => {
+  const initialize = useAuthStore(state => state.initialize);
+  const login = useAuthStore(state => state.login);
+  const register = useAuthStore(state => state.register);
+  const logout = useAuthStore(state => state.logout);
+  const clearError = useAuthStore(state => state.clearError);
+
+  return useMemo(() => ({
+    initialize,
+    login,
+    register,
+    logout,
+    clearError,
+  }), [initialize, login, register, logout, clearError]);
+};
+
+export const useAuthStoreState = () => {
+  const user = useAuthStore(state => state.auth.user);
+  const token = useAuthStore(state => state.auth.token);
+  const isAuthenticated = useAuthStore(state => state.auth.isAuthenticated);
+  const isLoading = useAuthStore(state => state.auth.isLoading);
+  const error = useAuthStore(state => state.auth.error);
+
+  return useMemo(() => ({
+    user,
+    token,
+    isAuthenticated,
+    isLoading,
+    error,
+  }), [user, token, isAuthenticated, isLoading, error]);
+};

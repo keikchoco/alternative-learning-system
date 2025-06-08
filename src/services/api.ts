@@ -75,7 +75,7 @@ export const fetchModules = async (): Promise<Module[]> => {
 
     // For development, load from JSON file
     const modulesModule = await import('@/data/modules.json');
-    const modules: Module[] = modulesModule.default;
+    const modules: Module[] = modulesModule.default as Module[];
 
     return modules;
   } catch (error) {
@@ -227,7 +227,7 @@ export const fetchEvents = async (): Promise<Event[]> => {
 
     // For development, load directly from JSON file
     const eventsModule = await import('@/data/events.json');
-    const events: Event[] = eventsModule.default;
+    const events: Event[] = eventsModule.default as Event[];
 
     return events;
   } catch (error) {

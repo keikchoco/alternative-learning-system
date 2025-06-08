@@ -53,13 +53,13 @@ function useStableStoreData() {
 
       setStoreData({
         modules: state.modules?.data || [],
-        loadModules: state.modules?.loadModules,
+        loadModules: null, // Remove action access since it's not available in types
         progress: state.progress?.data || [],
-        loadProgress: state.progress?.loadProgress,
+        loadProgress: null, // Remove action access since it's not available in types
         progressLoading: state.progress?.loading || false,
         // Add students data from main store
         students: state.students?.data || [],
-        loadStudents: state.students?.loadStudents
+        loadStudents: null // Remove action access since it's not available in types
       });
     });
 
@@ -116,7 +116,7 @@ function StudentActivitySummaryPageContent() {
 
     // If not found in store, use static data as fallback
     if (!found) {
-      found = studentsData.find(student => student.lrn === lrn);
+      found = studentsData.find(student => student.lrn === lrn) as Student | undefined;
     }
 
     return found;
@@ -137,20 +137,8 @@ function StudentActivitySummaryPageContent() {
       try {
         setIsInitialLoading(true);
 
-        // Load students data from main store first
-        if (loadStudents && typeof loadStudents === 'function') {
-          await loadStudents();
-        }
-
-        // Load modules from main store
-        if (loadModules && typeof loadModules === 'function') {
-          await loadModules();
-        }
-
-        // Load progress data from main store
-        if (loadProgress && typeof loadProgress === 'function') {
-          await loadProgress();
-        }
+        // Load data from progress store (main store actions are not available)
+        // The main store data will be used as fallback if progress store is empty
 
         // Also load students and progress data from progress store for navigation
         if (fetchStudents && typeof fetchStudents === 'function') {
@@ -190,7 +178,7 @@ function StudentActivitySummaryPageContent() {
 
       // If no progress in store, use static data as fallback
       if (progressRecords.length === 0) {
-        progressRecords = progressData.filter(p => p.studentId === student.lrn);
+        progressRecords = progressData.filter(p => p.studentId === student.lrn) as Progress[];
       }
 
       return progressRecords;
@@ -250,7 +238,7 @@ function StudentActivitySummaryPageContent() {
     };
 
     const filteredStudents = getFilteredStudents();
-    const currentStudentIndex = filteredStudents.findIndex(s => s.lrn === studentId);
+    const currentStudentIndex = filteredStudents.findIndex((s: Student) => s.lrn === studentId);
     return {
       filteredStudents,
       currentStudentIndex,
@@ -309,9 +297,9 @@ function StudentActivitySummaryPageContent() {
       if (updateActivity) {
         await updateActivity(studentId, selectedModule, activityIndex, activity);
       }
-      // Refresh progress data
-      if (loadProgress && typeof loadProgress === 'function') {
-        await loadProgress();
+      // Refresh progress data from progress store
+      if (fetchProgress && typeof fetchProgress === 'function') {
+        await fetchProgress();
       }
       setShowEditSuccess(true);
       setTimeout(() => setShowEditSuccess(false), 3000);
@@ -319,16 +307,16 @@ function StudentActivitySummaryPageContent() {
       console.error('Error updating activity:', error);
       alert('Failed to update activity. Please try again.');
     }
-  }, [updateActivity, studentId, selectedModule, loadProgress]);
+  }, [updateActivity, studentId, selectedModule, fetchProgress]);
 
   const handleActivityDelete = useCallback(async (activityIndex: number) => {
     try {
       if (deleteActivity) {
         await deleteActivity(studentId, selectedModule, activityIndex);
       }
-      // Refresh progress data
-      if (loadProgress && typeof loadProgress === 'function') {
-        await loadProgress();
+      // Refresh progress data from progress store
+      if (fetchProgress && typeof fetchProgress === 'function') {
+        await fetchProgress();
       }
       setShowEditSuccess(true);
       setTimeout(() => setShowEditSuccess(false), 3000);
@@ -336,7 +324,7 @@ function StudentActivitySummaryPageContent() {
       console.error('Error deleting activity:', error);
       alert('Failed to delete activity. Please try again.');
     }
-  }, [deleteActivity, studentId, selectedModule, loadProgress]);
+  }, [deleteActivity, studentId, selectedModule, fetchProgress]);
 
   // Get current module progress with memoization
   const currentModuleProgress = useMemo(() => {

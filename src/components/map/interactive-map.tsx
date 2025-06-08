@@ -179,7 +179,6 @@ export function InteractiveMap({
         scrollWheelZoom={true}
         touchZoom={true}
         dragging={true}
-        tap={true}
         boxZoom={true}
         keyboard={true}
       >

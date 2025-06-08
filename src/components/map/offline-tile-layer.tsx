@@ -145,13 +145,15 @@ export function OfflineTileLayer({ url, attribution, isOnline }: OfflineTileLaye
     }
 
     // Create and add new tile layer
-    tileLayerRef.current = new OfflineTileLayerClass(url, {
+    tileLayerRef.current = new (OfflineTileLayerClass as any)(url, {
       attribution,
       maxZoom: 19,
       subdomains: ['a', 'b', 'c']
     });
 
-    map.addLayer(tileLayerRef.current);
+    if (tileLayerRef.current) {
+      map.addLayer(tileLayerRef.current);
+    }
 
     // Cleanup function
     return () => {

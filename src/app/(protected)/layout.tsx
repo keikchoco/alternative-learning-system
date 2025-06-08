@@ -15,7 +15,8 @@ import {
   LineChart,
   Settings,
   LogOut,
-  ChevronDown
+  ChevronDown,
+  Shield
 } from 'lucide-react';
 
 // Navigation items for all users
@@ -27,8 +28,10 @@ const commonNavItems = [
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
-// Navigation items only for master admin (currently empty)
-const masterAdminNavItems: typeof commonNavItems = [];
+// Navigation items only for master admin
+const masterAdminNavItems: typeof commonNavItems = [
+  { name: 'Admin Management', href: '/admin', icon: Shield },
+];
 
 export default function ProtectedLayout({
   children,

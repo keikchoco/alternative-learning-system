@@ -16,8 +16,8 @@ import { createAuthSlice } from './slices/auth-slice';
 const STORE_VERSION = '1.1.0'; // Increment this when store structure changes
 const STORE_KEY = 'als-student-tracker';
 
-// Extended store state with auth
-interface ExtendedStoreState extends StoreState {
+// Extended store state with auth (excluding events for now since it's handled separately)
+interface ExtendedStoreState extends Omit<StoreState, 'events'> {
   auth: AuthState;
 }
 
@@ -158,3 +158,8 @@ export type AppStore = typeof useStore;
 
 // Export a hook that can be reused to resolve the store
 export const useAppStore = useStore;
+
+// Export convenience hooks for accessing store state and actions
+// Note: These will be properly typed after we fix the type definitions
+export const useStoreState = useStore;
+export const useStoreActions = useStore;

@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { StoreState, ProgressState, Progress, Activity, ProgressFilters } from '@/types';
+import { ProgressState, Progress, Activity, ProgressFilters, ProgressStatistics } from '@/types';
 import {
   fetchProgress,
   createProgress as apiCreateProgress,
@@ -54,7 +54,7 @@ interface ProgressSlice {
 
 // Create the progress slice
 export const createProgressSlice: StateCreator<
-  StoreState,
+  any,
   [['zustand/devtools', never], ['zustand/persist', unknown], ['zustand/immer', never]],
   [],
   { progress: ProgressSlice }

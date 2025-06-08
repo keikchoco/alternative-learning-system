@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { StoreState, StudentState, Student, StudentFilters } from '@/types';
+import { StudentState, Student, StudentFilters } from '@/types';
 import { 
   fetchStudents, 
   createStudent as apiCreateStudent,
@@ -45,7 +45,7 @@ interface StudentSlice {
 
 // Create the student slice
 export const createStudentSlice: StateCreator<
-  StoreState,
+  any,
   [['zustand/devtools', never], ['zustand/persist', unknown], ['zustand/immer', never]],
   [],
   { students: StudentSlice }

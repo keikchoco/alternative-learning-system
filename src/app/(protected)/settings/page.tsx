@@ -6,19 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { useAuthStoreState } from '@/store/auth-store';
 import { useAccessibilityStore, FontSize, FONT_SIZE_LABELS } from '@/store/accessibility-store';
-import { useState } from 'react';
 import { Sun, Moon, RotateCcw, Type } from 'lucide-react';
 
 export default function SettingsPage() {
-  const { user } = useAuthStoreState();
   const { fontSize, theme, setFontSize, setTheme, resetToDefaults } = useAccessibilityStore();
-  const [systemMaintenance, setSystemMaintenance] = useState(false);
-  const [debugMode, setDebugMode] = useState(false);
-
-  const isMasterAdmin = user?.role === 'master_admin';
-  const isRegularAdmin = user?.role === 'admin';
 
   const handleFontSizeChange = (value: string) => {
     setFontSize(value as FontSize);
@@ -26,16 +18,6 @@ export default function SettingsPage() {
 
   const handleThemeToggle = (checked: boolean) => {
     setTheme(checked ? 'dark' : 'light');
-  };
-
-  const handleSystemMaintenanceChange = (checked: boolean) => {
-    setSystemMaintenance(checked);
-    // Here you would typically make an API call to update the system maintenance state
-  };
-
-  const handleDebugModeChange = (checked: boolean) => {
-    setDebugMode(checked);
-    // Here you would typically make an API call to update the debug mode state
   };
 
   const handleResetSettings = () => {
@@ -56,11 +38,6 @@ export default function SettingsPage() {
           <TabsTrigger value="general" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             General
           </TabsTrigger>
-          {isMasterAdmin && (
-            <TabsTrigger value="admin" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-              Admin Settings
-            </TabsTrigger>
-          )}
         </TabsList>
 
         <TabsContent value="accessibility">
@@ -163,53 +140,6 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
         </TabsContent>
-
-        {isMasterAdmin && (
-          <TabsContent value="admin">
-            <Card className="bg-white dark:bg-slate-800 border-4 border-blue-600 dark:border-blue-500">
-              <CardHeader>
-                <CardTitle className="text-gray-900 dark:text-white">Admin Settings</CardTitle>
-                <CardDescription className="text-gray-600 dark:text-gray-300">
-                  Master admin exclusive settings
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="system-maintenance" className="text-gray-900 dark:text-white">
-                      System Maintenance Mode
-                    </Label>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Enable maintenance mode to restrict access to the system
-                    </p>
-                  </div>
-                  <Switch
-                    id="system-maintenance"
-                    checked={systemMaintenance}
-                    onCheckedChange={handleSystemMaintenanceChange}
-                    className="data-[state=checked]:bg-blue-600"
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="debug-mode" className="text-gray-900 dark:text-white">
-                      Debug Mode
-                    </Label>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Enable debug mode for detailed system logs and diagnostics
-                    </p>
-                  </div>
-                  <Switch
-                    id="debug-mode"
-                    checked={debugMode}
-                    onCheckedChange={handleDebugModeChange}
-                    className="data-[state=checked]:bg-blue-600"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        )}
       </Tabs>
     </div>
   );

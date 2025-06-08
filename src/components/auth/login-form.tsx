@@ -3,13 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { loginSchema, LoginFormValues } from '@/validators/auth-validators';
 import { useAuthStoreState, useAuthStoreActions } from '@/store/auth-store';
 
 export function LoginForm() {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
   // Get auth store actions and state
@@ -144,15 +141,7 @@ export function LoginForm() {
           </button>
         </div>
 
-        <div className="mt-3 sm:mt-4">
-          <button
-            type="button"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            onClick={() => router.push('/register')}
-          >
-            Create Account
-          </button>
-        </div>
+
       </form>
     </div>
   );

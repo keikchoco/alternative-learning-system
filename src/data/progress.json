@@ -242,7 +242,7 @@
         "type": "Quiz",
         "score": 8,
         "total": 10,
-        "date": "2025-05-03",
+        "date": "2024-08-20",
         "remarks": "Passed"
       },
       {
@@ -250,7 +250,7 @@
         "type": "Assignment",
         "score": 7,
         "total": 10,
-        "date": "2025-05-06",
+        "date": "2024-08-25",
         "remarks": "Passed"
       },
       {
@@ -258,15 +258,15 @@
         "type": "Project",
         "score": 15,
         "total": 20,
-        "date": "2025-05-07",
-        "remarks": "Needs Revision"
+        "date": "2024-09-01",
+        "remarks": "Good work"
       },
       {
         "name": "Participation Week 1",
         "type": "Participation",
         "score": 5,
         "total": 5,
-        "date": "2025-05-08",
+        "date": "2024-09-05",
         "remarks": "Excellent"
       }
     ]

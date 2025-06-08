@@ -263,21 +263,21 @@ export class StorageService {
       if (!this.hasStudentData()) {
         console.log('📥 Initializing students from static data...');
         const studentsModule = await import('@/data/students.json');
-        const students: Student[] = studentsModule.default;
+        const students: Student[] = studentsModule.default as Student[];
         this.saveStudents(students);
       }
 
       if (!this.hasBarangayData()) {
         console.log('📥 Initializing barangays from static data...');
         const barangaysModule = await import('@/data/barangays.json');
-        const barangays: Barangay[] = barangaysModule.default;
+        const barangays: Barangay[] = barangaysModule.default as Barangay[];
         this.saveBarangays(barangays);
       }
 
       if (!this.hasProgressData()) {
         console.log('📥 Initializing progress from static data...');
         const progressModule = await import('@/data/progress.json');
-        const progress: Progress[] = progressModule.default;
+        const progress: Progress[] = progressModule.default as Progress[];
         this.saveProgress(progress);
       }
 

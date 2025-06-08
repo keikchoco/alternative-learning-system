@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { StoreState, BarangayState, Barangay } from '@/types';
+import { BarangayState, Barangay } from '@/types';
 import { fetchBarangays } from '@/services/api';
 
 // Initial state for the barangay slice
@@ -22,7 +22,7 @@ interface BarangaySlice {
 
 // Create the barangay slice
 export const createBarangaySlice: StateCreator<
-  StoreState,
+  any,
   [['zustand/devtools', never], ['zustand/persist', unknown], ['zustand/immer', never]],
   [],
   { barangays: BarangaySlice }

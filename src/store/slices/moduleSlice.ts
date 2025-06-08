@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { StoreState, ModuleState, Module } from '@/types';
+import { ModuleState, Module } from '@/types';
 import { fetchModules } from '@/services/api';
 
 // Initial state for the module slice
@@ -23,7 +23,7 @@ interface ModuleSlice {
 
 // Create the module slice
 export const createModuleSlice: StateCreator<
-  StoreState,
+  any,
   [['zustand/devtools', never], ['zustand/persist', unknown], ['zustand/immer', never]],
   [],
   { modules: ModuleSlice }

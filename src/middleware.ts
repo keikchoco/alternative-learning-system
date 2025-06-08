@@ -25,6 +25,12 @@ const authRoutes = [
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Redirect register route to login (disable public registration)
+  if (pathname === '/register') {
+    console.log('🚫 Public registration disabled, redirecting to login...');
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
   // Check if the route is protected
   const isProtectedRoute = protectedRoutes.some(route =>
     pathname === route || pathname.startsWith(`${route}/`)

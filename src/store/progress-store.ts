@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { Student, Progress, ProgressState, ProgressFilters, Barangay, Activity } from '@/types';
+import { User } from '@/types/auth';
 import {
   fetchStudents,
   fetchBarangays,
@@ -44,7 +45,7 @@ export const useProgressStore = create<{
   // Actions
   fetchProgress: () => Promise<void>;
   fetchStudents: () => Promise<void>;
-  fetchBarangays: () => Promise<void>;
+  fetchBarangays: (user?: User | null) => Promise<void>;
   setSearchQuery: (query: string) => void;
   setSelectedBarangay: (barangayId: string) => void;
   filterStudents: () => void;
@@ -54,6 +55,7 @@ export const useProgressStore = create<{
   getProgressByStudentId: (studentId: string) => Progress[];
   updateActivity: (studentId: string, moduleId: string, activityIndex: number, activity: Activity) => Promise<void>;
   deleteActivity: (studentId: string, moduleId: string, activityIndex: number) => Promise<void>;
+  initializeWithUser: (user: User | null) => Promise<void>;
 }>()(
   immer((set, get) => ({
     progress: initialState,
@@ -116,8 +118,8 @@ export const useProgressStore = create<{
       }
     },
 
-    // Fetch barangays data
-    fetchBarangays: async () => {
+    // Fetch barangays data with optional user context for proper barangay selection
+    fetchBarangays: async (user?: User | null) => {
       set(state => {
         state.loadingBarangays = true;
         state.errorBarangays = null;
@@ -125,14 +127,26 @@ export const useProgressStore = create<{
 
       try {
         const barangaysData = await fetchBarangays();
-        
+
         set(state => {
           state.barangays = barangaysData;
           state.loadingBarangays = false;
-          
-          // Set first barangay as selected if none selected
+
+          // Smart barangay selection based on user role
           if (!state.selectedBarangay && barangaysData.length > 0) {
-            state.selectedBarangay = barangaysData[0].id;
+            if (user?.role === 'admin' && user?.assignedBarangayId) {
+              // For Regular Admin: select their assigned barangay
+              const assignedBarangay = barangaysData.find(b => b.id === user.assignedBarangayId);
+              if (assignedBarangay) {
+                state.selectedBarangay = assignedBarangay.id;
+              } else {
+                // Fallback to first barangay if assigned barangay not found
+                state.selectedBarangay = barangaysData[0].id;
+              }
+            } else {
+              // For Master Admin or no user: select first barangay
+              state.selectedBarangay = barangaysData[0].id;
+            }
           }
         });
 
@@ -300,6 +314,19 @@ export const useProgressStore = create<{
       } catch (error) {
         console.error('Error deleting activity:', error);
         throw error;
+      }
+    },
+
+    // Initialize store with user context for proper barangay selection
+    initializeWithUser: async (user: User | null) => {
+      try {
+        await Promise.all([
+          get().fetchStudents(),
+          get().fetchBarangays(user),
+          get().fetchProgress()
+        ]);
+      } catch (error) {
+        console.error('Error initializing progress store with user context:', error);
       }
     }
   }))

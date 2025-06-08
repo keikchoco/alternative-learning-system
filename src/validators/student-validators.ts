@@ -15,14 +15,7 @@ export const studentSchema = z.object({
   program: z.string().min(1, { message: "Program is required" }),
   enrollmentDate: z.string().min(1, { message: "Enrollment date is required" }),
   modality: z.enum(['Face to Face', 'Online', 'Blended'] as const),
-  pisScore: z.union([
-    z.number().min(0).max(100).nullable(),
-    z.string().transform((val) => {
-      if (val === '') return null;
-      const num = Number(val);
-      return isNaN(num) ? null : num;
-    })
-  ]),
+  pisScore: z.number().min(0).max(100).nullable(),
   assessment: z.string().optional(),
   group: z.string().min(1, { message: "Group is required" }),
   image: z.string().optional(),

@@ -28,12 +28,11 @@ export default function StudentsPage() {
     barangays,
     selectedBarangay,
     loadingBarangays,
-    fetchStudents,
-    fetchBarangays,
     setSelectedBarangay,
     addStudent,
     editStudent,
-    removeStudent
+    removeStudent,
+    initializeWithUser
   } = useStudentStore();
 
   // Local state for dialogs
@@ -43,14 +42,13 @@ export default function StudentsPage() {
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
-  // Fetch data on component mount
+  // Fetch data on component mount with user context for proper barangay selection
   useEffect(() => {
-    fetchStudents();
-    fetchBarangays();
-  }, [fetchStudents, fetchBarangays]);
+    initializeWithUser(user);
+  }, [initializeWithUser, user]);
 
   // For regular admin, the barangay selection will be automatically handled
-  // by the store when barangays are loaded (it will auto-select the first available barangay)
+  // by the store when barangays are loaded (it will auto-select their assigned barangay)
   // Since filteredBarangays will only contain their assigned barangay, this works correctly
 
   // Handle add student

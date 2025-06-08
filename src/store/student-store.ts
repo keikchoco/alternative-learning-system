@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { Student, StudentState, StudentFilters, Barangay } from '@/types';
+import { Student, StudentState, Barangay } from '@/types';
+import { User } from '@/types/auth';
 import {
   fetchStudents,
   fetchBarangays,
@@ -37,13 +38,14 @@ export const useStudentStore = create<{
   errorBarangays: string | null;
   // Actions
   fetchStudents: () => Promise<void>;
-  fetchBarangays: () => Promise<void>;
+  fetchBarangays: (user?: User | null) => Promise<void>;
   setSearchQuery: (query: string) => void;
   setSelectedBarangay: (barangayId: string) => void;
   filterStudents: () => void;
   addStudent: (student: Omit<Student, 'id'>) => Promise<Student>;
   editStudent: (student: Student) => Promise<Student>;
   removeStudent: (id: string) => Promise<void>;
+  initializeWithUser: (user: User | null) => Promise<void>;
 }>()(
   immer((set, get) => ({
     students: initialState,
@@ -96,8 +98,8 @@ export const useStudentStore = create<{
       }
     },
 
-    // Fetch barangays
-    fetchBarangays: async () => {
+    // Fetch barangays with optional user context for proper barangay selection
+    fetchBarangays: async (user?: User | null) => {
       set(state => {
         state.loadingBarangays = true;
         state.errorBarangays = null;
@@ -110,9 +112,21 @@ export const useStudentStore = create<{
           state.barangays = barangays;
           state.loadingBarangays = false;
 
-          // Auto-select first barangay if none is selected
+          // Smart barangay selection based on user role
           if (!state.selectedBarangay && barangays.length > 0) {
-            state.selectedBarangay = barangays[0].id;
+            if (user?.role === 'admin' && user?.assignedBarangayId) {
+              // For Regular Admin: select their assigned barangay
+              const assignedBarangay = barangays.find(b => b.id === user.assignedBarangayId);
+              if (assignedBarangay) {
+                state.selectedBarangay = assignedBarangay.id;
+              } else {
+                // Fallback to first barangay if assigned barangay not found
+                state.selectedBarangay = barangays[0].id;
+              }
+            } else {
+              // For Master Admin or no user: select first barangay
+              state.selectedBarangay = barangays[0].id;
+            }
           }
         });
 
@@ -255,6 +269,18 @@ export const useStudentStore = create<{
           state.students.error = error instanceof Error ? error.message : 'Failed to delete student';
         });
         throw error;
+      }
+    },
+
+    // Initialize store with user context for proper barangay selection
+    initializeWithUser: async (user: User | null) => {
+      try {
+        await Promise.all([
+          get().fetchStudents(),
+          get().fetchBarangays(user)
+        ]);
+      } catch (error) {
+        console.error('Error initializing student store with user context:', error);
       }
     },
   }))

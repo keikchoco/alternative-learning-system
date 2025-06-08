@@ -46,17 +46,7 @@ export const registerSchema = z
       .default('admin'),
     assignedBarangayId: z
       .string()
-      .optional()
-      .refine(
-        (val, ctx) => {
-          // If role is admin, assignedBarangayId is required
-          if (ctx.parent.role === 'admin') {
-            return !!val;
-          }
-          return true;
-        },
-        { message: 'Barangay assignment is required for regular admins' }
-      ),
+      .optional(),
     password: z
       .string()
       .min(1, { message: 'Password is required' })
@@ -73,6 +63,16 @@ export const registerSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
+  })
+  .refine((data) => {
+    // If role is admin, assignedBarangayId is required
+    if (data.role === 'admin') {
+      return !!data.assignedBarangayId;
+    }
+    return true;
+  }, {
+    message: 'Barangay assignment is required for regular admins',
+    path: ['assignedBarangayId'],
   });
 
 // Types derived from the schemas

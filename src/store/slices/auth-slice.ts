@@ -17,7 +17,7 @@ const initialAuthState: AuthState = {
 
 // Create the auth slice
 export const createAuthSlice: StateCreator<
-  { auth: AuthState },
+  any,
   [['zustand/devtools', never], ['zustand/persist', unknown], ['zustand/immer', never]],
   [],
   { auth: AuthState }

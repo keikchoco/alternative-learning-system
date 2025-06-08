@@ -86,7 +86,7 @@ export function SchoolCalendar() {
     const prevMonth = new Date(year, month - 1, 0);
     const daysInPrevMonth = prevMonth.getDate();
 
-    const calendarDays = [];
+    const calendarDays: Array<{ day: number; isCurrentMonth: boolean; isToday: boolean }> = [];
 
     // Add days from previous month
     for (let i = startingDayOfWeek - 1; i >= 0; i--) {

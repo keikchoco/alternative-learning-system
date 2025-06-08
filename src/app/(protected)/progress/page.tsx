@@ -22,19 +22,15 @@ export default function ProgressPage() {
     selectedBarangay,
     loadingBarangays,
     loadingStudents,
-    fetchStudents,
-    fetchBarangays,
-    fetchProgress,
     setSelectedBarangay,
     getFilteredStudents,
+    initializeWithUser,
   } = useProgressStore();
 
-  // Fetch data on component mount
+  // Fetch data on component mount with user context for proper barangay selection
   useEffect(() => {
-    fetchStudents();
-    fetchBarangays();
-    fetchProgress();
-  }, [fetchStudents, fetchBarangays, fetchProgress]);
+    initializeWithUser(user);
+  }, [initializeWithUser, user]);
 
   // Filter barangays based on user role
   const filteredBarangays = user?.role === 'admin' && user?.assignedBarangayId

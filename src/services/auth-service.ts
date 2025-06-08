@@ -227,7 +227,7 @@ class AuthService {
    *
    * @returns Array of stored users
    */
-  private getStoredUsers(): User[] {
+  getStoredUsers(): User[] {
     // Return cached users if available
     if (this.cachedUsers) {
       return this.cachedUsers;

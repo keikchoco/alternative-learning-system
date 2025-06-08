@@ -8,12 +8,12 @@ const protectedRoutes = [
   '/students',
   '/map',
   '/progress',
+  '/settings',
 ];
 
 // Define admin-only routes (only master admin can access)
 const masterAdminRoutes = [
   '/admin',
-  '/settings',
 ];
 
 // Define auth routes

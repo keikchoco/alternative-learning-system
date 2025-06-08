@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { StoreState, BarangayState } from '@/types';
+import { StoreState, BarangayState, Barangay } from '@/types';
 import { fetchBarangays } from '@/services/api';
 
 // Initial state for the barangay slice
@@ -9,12 +9,23 @@ const initialBarangayState: BarangayState = {
   error: null
 };
 
+// Define the barangay slice interface
+interface BarangaySlice {
+  data: Barangay[];
+  loading: boolean;
+  error: string | null;
+  // Actions
+  loadBarangays: () => Promise<void>;
+  getBarangayById: (id: string) => Barangay | undefined;
+  getBarangayNameById: (id: string) => string;
+}
+
 // Create the barangay slice
 export const createBarangaySlice: StateCreator<
   StoreState,
   [['zustand/devtools', never], ['zustand/persist', unknown], ['zustand/immer', never]],
   [],
-  { barangays: any }
+  { barangays: BarangaySlice }
 > = (set, get) => ({
   barangays: {
     ...initialBarangayState,

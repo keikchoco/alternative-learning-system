@@ -226,19 +226,38 @@ export const useProgressStore = create<{
       return get().progress.data.filter(progress => progress.studentId === studentId);
     },
 
-    // Update an existing activity
+    // Update an existing activity with persistence
     updateActivity: async (studentId: string, moduleId: string, activityIndex: number, activity: Activity) => {
       try {
+        // Find the progress record
+        const progressRecord = get().progress.data.find(p => p.studentId === studentId && p.moduleId === moduleId);
+
+        if (!progressRecord) {
+          throw new Error('Progress record not found');
+        }
+
+        // Update the activity in the progress record
+        const updatedActivities = [...progressRecord.activities];
+        updatedActivities[activityIndex] = { ...activity };
+
+        const updatedProgress = {
+          ...progressRecord,
+          activities: updatedActivities
+        };
+
+        // Update the progress record in the store
         set(state => {
-          const progressRecord = state.progress.data.find(p => p.studentId === studentId && p.moduleId === moduleId);
-          if (progressRecord && progressRecord.activities[activityIndex]) {
-            progressRecord.activities[activityIndex] = { ...activity };
+          const index = state.progress.data.findIndex(p => p.id === progressRecord.id);
+          if (index !== -1) {
+            state.progress.data[index] = updatedProgress;
           }
         });
 
-        // In a real app, this would make an API call to update the backend
-        // For now, we'll just simulate the API call
-        await new Promise(resolve => setTimeout(resolve, 300));
+        // Persist to localStorage using the API
+        const { updateProgress } = await import('@/services/api');
+        await updateProgress(updatedProgress);
+
+        console.log(`✅ Updated activity ${activityIndex} for student ${studentId} in module ${moduleId}`);
       } catch (error) {
         console.error('Error updating activity:', error);
         throw error;
@@ -247,18 +266,37 @@ export const useProgressStore = create<{
 
 
 
-    // Delete an activity
+    // Delete an activity with persistence
     deleteActivity: async (studentId: string, moduleId: string, activityIndex: number) => {
       try {
+        // Find the progress record
+        const progressRecord = get().progress.data.find(p => p.studentId === studentId && p.moduleId === moduleId);
+
+        if (!progressRecord) {
+          throw new Error('Progress record not found');
+        }
+
+        // Remove the activity from the progress record
+        const updatedActivities = progressRecord.activities.filter((_, index) => index !== activityIndex);
+
+        const updatedProgress = {
+          ...progressRecord,
+          activities: updatedActivities
+        };
+
+        // Update the progress record in the store
         set(state => {
-          const progressRecord = state.progress.data.find(p => p.studentId === studentId && p.moduleId === moduleId);
-          if (progressRecord && progressRecord.activities[activityIndex]) {
-            progressRecord.activities.splice(activityIndex, 1);
+          const index = state.progress.data.findIndex(p => p.id === progressRecord.id);
+          if (index !== -1) {
+            state.progress.data[index] = updatedProgress;
           }
         });
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 300));
+        // Persist to localStorage using the API
+        const { updateProgress } = await import('@/services/api');
+        await updateProgress(updatedProgress);
+
+        console.log(`✅ Deleted activity ${activityIndex} for student ${studentId} in module ${moduleId}`);
       } catch (error) {
         console.error('Error deleting activity:', error);
         throw error;

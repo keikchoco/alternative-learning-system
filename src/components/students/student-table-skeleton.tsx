@@ -15,9 +15,9 @@ export function StudentTableSkeleton() {
   const loadingRows = Array.from({ length: 5 }, (_, i) => i);
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border border-gray-200 dark:border-gray-600">
       <Table>
-        <TableHeader className="bg-blue-600">
+        <TableHeader className="bg-blue-600 dark:bg-blue-700">
           <TableRow>
             <TableHead className="text-white font-bold">
               LEARNER'S ID NO.
@@ -41,7 +41,7 @@ export function StudentTableSkeleton() {
         </TableHeader>
         <TableBody>
           {loadingRows.map((index) => (
-            <TableRow key={index}>
+            <TableRow key={index} className="bg-white dark:bg-slate-800">
               <TableCell>
                 <Skeleton className="h-4 w-24" />
               </TableCell>

@@ -21,8 +21,13 @@ interface ExtendedStoreState extends StoreState {
   auth: AuthState;
 }
 
-// Cache invalidation utility
+// Cache invalidation utility - only run on client side
 const clearIncompatibleCache = () => {
+  // Skip on server-side rendering
+  if (typeof window === 'undefined') {
+    return;
+  }
+
   try {
     const storedVersion = localStorage.getItem(`${STORE_KEY}-version`);
     if (storedVersion !== STORE_VERSION) {
@@ -65,8 +70,15 @@ const clearIncompatibleCache = () => {
   }
 };
 
-// Clear incompatible cache before creating store
-clearIncompatibleCache();
+// Clear incompatible cache before creating store - only on client side
+// This will be called when the store is first accessed on the client
+let cacheCleared = false;
+const ensureCacheCleared = () => {
+  if (typeof window !== 'undefined' && !cacheCleared) {
+    clearIncompatibleCache();
+    cacheCleared = true;
+  }
+};
 
 // Create the store with all slices
 export const useStore = create<ExtendedStoreState>()(
@@ -118,6 +130,9 @@ export const useStore = create<ExtendedStoreState>()(
         },
         // Add error handling for storage issues
         onRehydrateStorage: () => {
+          // Ensure cache is cleared before rehydration
+          ensureCacheCleared();
+
           return (state, error) => {
             if (error) {
               console.error('❌ Store rehydration failed:', error);

@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { StoreState, ModuleState } from '@/types';
+import { StoreState, ModuleState, Module } from '@/types';
 import { fetchModules } from '@/services/api';
 
 // Initial state for the module slice
@@ -9,12 +9,24 @@ const initialModuleState: ModuleState = {
   error: null
 };
 
+// Define the module slice interface
+interface ModuleSlice {
+  data: Module[];
+  loading: boolean;
+  error: string | null;
+  // Actions
+  loadModules: () => Promise<void>;
+  getModuleById: (id: string) => Module | undefined;
+  getModuleTitleById: (id: string) => string;
+  getModulesByProgram: (program: string) => Module[];
+}
+
 // Create the module slice
 export const createModuleSlice: StateCreator<
   StoreState,
   [['zustand/devtools', never], ['zustand/persist', unknown], ['zustand/immer', never]],
   [],
-  { modules: any }
+  { modules: ModuleSlice }
 > = (set, get) => ({
   modules: {
     ...initialModuleState,

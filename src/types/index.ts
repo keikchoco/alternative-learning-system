@@ -11,6 +11,9 @@ export type EventStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
 export interface Barangay {
   id: string;
   name: string;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 // Event Interface

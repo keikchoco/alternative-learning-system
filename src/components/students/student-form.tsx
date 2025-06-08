@@ -4,13 +4,15 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Student, Barangay } from '@/types';
+import { User } from '@/types/auth';
 import {
   studentSchema,
   StudentFormValues,
   programOptions,
   modalityOptions,
   statusOptions,
-  genderOptions
+  genderOptions,
+  groupOptions
 } from '@/validators/student-validators';
 
 import { Button } from '@/components/ui/button';
@@ -36,11 +38,18 @@ import {
 interface StudentFormProps {
   student?: Student;
   barangays: Barangay[];
-  onSubmit: (data: StudentFormValues) => void;
+  user: User | null;
+  onSubmit: (data: StudentFormValues) => Promise<void>;
   onCancel: () => void;
+  isSubmitting?: boolean;
 }
 
-export function StudentForm({ student, barangays, onSubmit, onCancel }: StudentFormProps) {
+export function StudentForm({ student, barangays, user, onSubmit, onCancel, isSubmitting = false }: StudentFormProps) {
+  // Filter barangays based on user role - Regular Admin can only see their assigned barangay
+  const filteredBarangays = user?.role === 'admin' && user?.assignedBarangayId
+    ? barangays.filter(b => b.id === user.assignedBarangayId)
+    : barangays;
+
   // Initialize form with React Hook Form and Zod validation
   const form = useForm<StudentFormValues>({
     resolver: zodResolver(studentSchema),
@@ -50,18 +59,24 @@ export function StudentForm({ student, barangays, onSubmit, onCancel }: StudentF
       status: student?.status || 'active',
       gender: student?.gender || 'male',
       address: student?.address || '',
-      barangayId: student?.barangayId || '',
+      barangayId: student?.barangayId || (user?.role === 'admin' && user?.assignedBarangayId ? user.assignedBarangayId : ''),
       program: student?.program || '',
       enrollmentDate: student?.enrollmentDate || new Date().toISOString().split('T')[0],
       modality: student?.modality || 'Face to Face',
       pisScore: student?.pisScore || null,
       assessment: student?.assessment || '',
+      group: student?.group || 'A',
     },
   });
 
   // Handle form submission
-  const handleSubmit = (data: StudentFormValues) => {
-    onSubmit(data);
+  const handleSubmit = async (data: StudentFormValues) => {
+    try {
+      await onSubmit(data);
+    } catch (error) {
+      // Error will be handled by the parent component (StudentDialog)
+      console.error('Form submission error:', error);
+    }
   };
 
   return (
@@ -185,7 +200,7 @@ export function StudentForm({ student, barangays, onSubmit, onCancel }: StudentF
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {barangays.map(barangay => (
+                    {filteredBarangays.map(barangay => (
                       <SelectItem key={barangay.id} value={barangay.id}>
                         {barangay.name}
                       </SelectItem>
@@ -321,6 +336,35 @@ export function StudentForm({ student, barangays, onSubmit, onCancel }: StudentF
             )}
           />
 
+          {/* Group */}
+          <FormField
+            control={form.control}
+            name="group"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-blue-700 font-semibold">Group</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="border-blue-200 focus:border-blue-500 focus:ring-blue-500">
+                      <SelectValue placeholder="Select group" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {groupOptions.map(option => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           {/* Assessment */}
           <FormField
             control={form.control}
@@ -349,15 +393,20 @@ export function StudentForm({ student, barangays, onSubmit, onCancel }: StudentF
             type="button"
             variant="outline"
             onClick={onCancel}
-            className="border-blue-200 text-blue-700 hover:bg-blue-50 cursor-pointer transition-all duration-200 hover:shadow-md"
+            disabled={isSubmitting}
+            className="border-blue-200 text-blue-700 hover:bg-blue-50 cursor-pointer transition-all duration-200 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </Button>
           <Button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-500 text-white cursor-pointer transition-all duration-200 hover:shadow-md"
+            disabled={isSubmitting}
+            className="bg-blue-600 hover:bg-blue-500 text-white cursor-pointer transition-all duration-200 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {student ? 'Update Student' : 'Add Student'}
+            {isSubmitting
+              ? (student ? 'Updating...' : 'Adding...')
+              : (student ? 'Update Student' : 'Add Student')
+            }
           </Button>
         </div>
       </form>

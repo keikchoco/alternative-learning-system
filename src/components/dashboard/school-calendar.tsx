@@ -16,6 +16,28 @@ export function SchoolCalendar() {
   const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null);
   const { events, fetchEvents, getEventsByDate } = useEventsStore();
 
+  // Helper function to create date string without timezone issues
+  const createDateString = (year: number, month: number, day: number): string => {
+    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  };
+
+  // Helper function to parse date string and create local date
+  const parseLocalDate = (dateString: string): Date => {
+    const [year, month, day] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day); // month is 0-indexed
+  };
+
+  // Helper function to format date for Philippine Time display
+  const formatDateForPHT = (dateString: string): string => {
+    const localDate = parseLocalDate(dateString);
+    return localDate.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
   // Load events on component mount
   useEffect(() => {
     fetchEvents();
@@ -231,15 +253,15 @@ export function SchoolCalendar() {
   };
 
   return (
-    <div className="calendar-container bg-white rounded-lg shadow-lg border-4 border-green-500 h-full flex flex-col overflow-hidden">
+    <div className="calendar-container bg-white dark:bg-slate-800 rounded-lg shadow-lg border-4 border-green-500 dark:border-green-400 h-full flex flex-col overflow-hidden">
       {/* Calendar Header */}
-      <div className="bg-green-500 text-white p-3 sm:p-4 flex-shrink-0">
+      <div className="bg-green-500 dark:bg-green-600 text-white p-3 sm:p-4 flex-shrink-0">
         <div className="flex items-center justify-between mb-2">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigateMonth('prev')}
-            className="text-white hover:bg-green-600 p-1"
+            className="text-white hover:bg-green-600 dark:hover:bg-green-700 p-1"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -251,13 +273,13 @@ export function SchoolCalendar() {
               hour: 'numeric',
               minute: '2-digit',
               second: '2-digit'
-            })} Local Time</div>
+            })} PHT</div>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigateMonth('next')}
-            className="text-white hover:bg-green-600 p-1"
+            className="text-white hover:bg-green-600 dark:hover:bg-green-700 p-1"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
@@ -272,7 +294,7 @@ export function SchoolCalendar() {
         {/* Day Headers */}
         <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-2 flex-shrink-0">
           {dayNames.map((day, index) => (
-            <div key={index} className="text-center font-bold text-gray-700 py-1 sm:py-2 text-xs sm:text-sm">
+            <div key={index} className="text-center font-bold text-gray-700 dark:text-gray-300 py-1 sm:py-2 text-xs sm:text-sm">
               {day}
             </div>
           ))}
@@ -281,9 +303,16 @@ export function SchoolCalendar() {
         {/* Calendar Days */}
         <div className="grid grid-cols-7 grid-rows-6 gap-0.5 sm:gap-1 flex-1 min-h-0">
           {calendarDays.map((dayData, index) => {
-            // Get events for this day
-            const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), dayData.day);
-            const dateString = dayDate.toISOString().split('T')[0]; // YYYY-MM-DD format
+            // Get events for this day - create date string directly to avoid timezone issues
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const day = dayData.day;
+
+            // Create date string in YYYY-MM-DD format without timezone conversion
+            const dateString = dayData.isCurrentMonth
+              ? createDateString(year, month, day)
+              : '';
+
             const dayEvents = dayData.isCurrentMonth ? getEventsByDate(dateString) : [];
             const hasEvents = dayEvents.length > 0;
 
@@ -291,14 +320,14 @@ export function SchoolCalendar() {
               <div
                 key={index}
                 className={`
-                  calendar-day flex flex-col items-center justify-start text-xs sm:text-sm border border-gray-200 relative p-0.5 sm:p-1 min-h-0 cursor-pointer
+                  calendar-day flex flex-col items-center justify-start text-xs sm:text-sm border border-gray-200 dark:border-gray-600 relative p-0.5 sm:p-1 min-h-0 cursor-pointer
                   ${dayData.isCurrentMonth
                     ? dayData.isToday
                       ? 'bg-blue-500 text-white font-bold'
                       : hasEvents
-                        ? 'text-gray-900 hover:bg-green-50 hover:border-green-300 hover:shadow-sm'
-                        : 'text-gray-900 hover:bg-gray-100'
-                    : 'text-gray-400'
+                        ? 'text-gray-900 dark:text-white hover:bg-green-50 dark:hover:bg-green-900/30 hover:border-green-300 dark:hover:border-green-400 hover:shadow-sm'
+                        : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
+                    : 'text-gray-400 dark:text-gray-500'
                   }
                 `}
                 onMouseEnter={(e) => dayData.isCurrentMonth && handleMouseEnter(dateString, e)}
@@ -344,16 +373,11 @@ export function SchoolCalendar() {
           onMouseEnter={handleTooltipMouseEnter}
           onMouseLeave={handleTooltipMouseLeave}
         >
-          <div className="bg-white border-4 border-green-500 rounded-lg shadow-xl p-4 max-w-sm">
+          <div className="bg-white dark:bg-slate-800 border-4 border-green-500 dark:border-green-400 rounded-lg shadow-xl p-4 max-w-sm">
             {/* Tooltip Header */}
-            <div className="bg-green-500 text-white px-3 py-2 rounded-t-md -mx-4 -mt-4 mb-3">
+            <div className="bg-green-500 dark:bg-green-600 text-white px-3 py-2 rounded-t-md -mx-4 -mt-4 mb-3">
               <h3 className="font-bold text-sm">
-                {new Date(hoveredDate).toLocaleDateString('en-US', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
+                {formatDateForPHT(hoveredDate)}
               </h3>
             </div>
 
@@ -378,17 +402,17 @@ export function SchoolCalendar() {
                     </span>
                   </div>
 
-                  <div className="flex items-center text-xs text-gray-600 mb-1">
+                  <div className="flex items-center text-xs text-gray-600 dark:text-gray-300 mb-1">
                     <Clock className="h-3 w-3 mr-1" />
                     <span>{event.time}</span>
                   </div>
 
-                  <div className="flex items-center text-xs text-gray-600 mb-2">
+                  <div className="flex items-center text-xs text-gray-600 dark:text-gray-300 mb-2">
                     <MapPin className="h-3 w-3 mr-1" />
                     <span>{event.location}</span>
                   </div>
 
-                  <p className="text-xs text-gray-700 leading-relaxed">
+                  <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
                     {event.description.length > 80
                       ? `${event.description.substring(0, 80)}...`
                       : event.description
@@ -400,7 +424,7 @@ export function SchoolCalendar() {
 
             {/* Tooltip Arrow */}
             <div className="absolute top-full left-1/2 transform -translate-x-1/2">
-              <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-green-500"></div>
+              <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-green-500 dark:border-t-green-600"></div>
             </div>
           </div>
         </div>

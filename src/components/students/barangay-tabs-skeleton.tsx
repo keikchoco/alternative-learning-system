@@ -9,10 +9,10 @@ export function BarangayTabsSkeleton() {
 
   return (
     <Tabs className="w-full">
-      <div className="border-b border-gray-300">
+      <div className="border-b border-gray-300 dark:border-gray-600">
         {/* Horizontal scroll container for mobile */}
-        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-          <TabsList className="w-fit bg-transparent rounded-none gap-0 min-w-full">
+        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-800">
+          <TabsList className="w-full bg-transparent rounded-none gap-0 justify-start">
             <div className="flex">
               {loadingTabs.map((index) => (
                 <Skeleton key={index} className="h-12 min-w-[100px] sm:min-w-[120px] px-4 sm:px-6 mx-0.5 rounded-none" />

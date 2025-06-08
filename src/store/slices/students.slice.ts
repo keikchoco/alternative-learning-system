@@ -26,12 +26,29 @@ const initialStudentState: StudentState = {
   error: null
 };
 
+// Define the student slice interface
+interface StudentSlice {
+  data: Student[];
+  filteredData: Student[];
+  filters: StudentFilters;
+  statistics: any;
+  loading: boolean;
+  error: string | null;
+  // Actions
+  loadStudents: () => Promise<void>;
+  setFilters: (filters: StudentFilters) => void;
+  clearFilters: () => void;
+  createStudent: (student: Omit<Student, 'id'>) => Promise<Student>;
+  updateStudent: (student: Student) => Promise<Student>;
+  deleteStudent: (id: string) => Promise<void>;
+}
+
 // Create the student slice
 export const createStudentSlice: StateCreator<
   StoreState,
   [['zustand/devtools', never], ['zustand/persist', unknown], ['zustand/immer', never]],
   [],
-  { students: any }
+  { students: StudentSlice }
 > = (set, get) => ({
   students: {
     ...initialStudentState,

@@ -1,25 +1,36 @@
 import { Student, Barangay, Module, Progress, Event } from '@/types';
+import { StorageService } from './storage-service';
 
-// Simulated API service that loads data from JSON files
+// Simulated API service that loads data from JSON files with localStorage persistence
 // In a real application, this would be replaced with actual API calls to MongoDB
 
 // Helper function to simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Load students data
+// Load students data with persistence
 export const fetchStudents = async (): Promise<Student[]> => {
   try {
     // Simulate network delay
     await delay(500);
 
-    // For development, load directly from JSON file
-    // In a real app, this would be replaced with an API call:
-    // const response = await fetch('/api/students');
-    // const students = await response.json();
+    // Try to load from localStorage first
+    let students = StorageService.loadStudents();
 
-    const studentsModule = await import('@/data/students.json');
-    const students: Student[] = studentsModule.default;
+    if (!students) {
+      // If no persisted data, initialize from static data
+      console.log('📥 No persisted student data found, loading from static files...');
+      await StorageService.initializeFromStaticData();
+      students = StorageService.loadStudents();
+    }
 
+    if (!students) {
+      // Fallback: load directly from JSON file
+      console.log('⚠️ Storage initialization failed, falling back to direct JSON import...');
+      const studentsModule = await import('@/data/students.json');
+      students = studentsModule.default as Student[];
+    }
+
+    console.log(`📊 Loaded ${students.length} students from storage`);
     return students;
   } catch (error) {
     console.error('Error fetching students:', error);
@@ -27,15 +38,29 @@ export const fetchStudents = async (): Promise<Student[]> => {
   }
 };
 
-// Load barangays data
+// Load barangays data with persistence
 export const fetchBarangays = async (): Promise<Barangay[]> => {
   try {
     await delay(300);
 
-    // For development, load from JSON file
-    const barangaysModule = await import('@/data/barangays.json');
-    const barangays: Barangay[] = barangaysModule.default;
+    // Try to load from localStorage first
+    let barangays = StorageService.loadBarangays();
 
+    if (!barangays) {
+      // If no persisted data, initialize from static data
+      console.log('📥 No persisted barangay data found, loading from static files...');
+      await StorageService.initializeFromStaticData();
+      barangays = StorageService.loadBarangays();
+    }
+
+    if (!barangays) {
+      // Fallback: load directly from JSON file
+      console.log('⚠️ Storage initialization failed, falling back to direct JSON import...');
+      const barangaysModule = await import('@/data/barangays.json');
+      barangays = barangaysModule.default as Barangay[];
+    }
+
+    console.log(`📊 Loaded ${barangays.length} barangays from storage`);
     return barangays;
   } catch (error) {
     console.error('Error fetching barangays:', error);
@@ -59,15 +84,29 @@ export const fetchModules = async (): Promise<Module[]> => {
   }
 };
 
-// Load progress data
+// Load progress data with persistence
 export const fetchProgress = async (): Promise<Progress[]> => {
   try {
     await delay(400);
 
-    // For development, load from JSON file
-    const progressModule = await import('@/data/progress.json');
-    const progress: Progress[] = progressModule.default;
+    // Try to load from localStorage first
+    let progress = StorageService.loadProgress();
 
+    if (!progress) {
+      // If no persisted data, initialize from static data
+      console.log('📥 No persisted progress data found, loading from static files...');
+      await StorageService.initializeFromStaticData();
+      progress = StorageService.loadProgress();
+    }
+
+    if (!progress) {
+      // Fallback: load directly from JSON file
+      console.log('⚠️ Storage initialization failed, falling back to direct JSON import...');
+      const progressModule = await import('@/data/progress.json');
+      progress = progressModule.default as Progress[];
+    }
+
+    console.log(`📊 Loaded ${progress.length} progress records from storage`);
     return progress;
   } catch (error) {
     console.error('Error fetching progress:', error);
@@ -75,7 +114,7 @@ export const fetchProgress = async (): Promise<Progress[]> => {
   }
 };
 
-// Create a new student
+// Create a new student with persistence
 export const createStudent = async (student: Omit<Student, 'id'>): Promise<Student> => {
   try {
     await delay(600);
@@ -83,11 +122,13 @@ export const createStudent = async (student: Omit<Student, 'id'>): Promise<Stude
     // Generate a new ID (in a real app, this would be done by the backend)
     const newStudent: Student = {
       ...student,
-      id: `student-${Date.now()}`
+      id: `student-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     };
 
-    // In a real app, this would be a POST request to the API
-    // For now, we'll just return the new student
+    // Persist the new student to localStorage
+    StorageService.addStudent(newStudent);
+
+    console.log(`✅ Created and persisted new student: ${newStudent.name} (${newStudent.id})`);
     return newStudent;
   } catch (error) {
     console.error('Error creating student:', error);
@@ -95,13 +136,15 @@ export const createStudent = async (student: Omit<Student, 'id'>): Promise<Stude
   }
 };
 
-// Update an existing student
+// Update an existing student with persistence
 export const updateStudent = async (student: Student): Promise<Student> => {
   try {
     await delay(600);
 
-    // In a real app, this would be a PUT request to the API
-    // For now, we'll just return the updated student
+    // Persist the updated student to localStorage
+    StorageService.updateStudent(student);
+
+    console.log(`✅ Updated and persisted student: ${student.name} (${student.id})`);
     return student;
   } catch (error) {
     console.error('Error updating student:', error);
@@ -109,21 +152,22 @@ export const updateStudent = async (student: Student): Promise<Student> => {
   }
 };
 
-// Delete a student
+// Delete a student with persistence
 export const deleteStudent = async (id: string): Promise<void> => {
   try {
     await delay(600);
 
-    // In a real app, this would be a DELETE request to the API
-    // For now, we'll just simulate success
-    return;
+    // Remove the student from localStorage
+    StorageService.removeStudent(id);
+
+    console.log(`✅ Deleted and removed student from storage: ${id}`);
   } catch (error) {
     console.error('Error deleting student:', error);
     throw new Error('Failed to delete student');
   }
 };
 
-// Create a new progress record
+// Create a new progress record with persistence
 export const createProgress = async (progress: Omit<Progress, 'id'>): Promise<Progress> => {
   try {
     await delay(500);
@@ -131,10 +175,13 @@ export const createProgress = async (progress: Omit<Progress, 'id'>): Promise<Pr
     // Generate a new ID
     const newProgress: Progress = {
       ...progress,
-      id: `progress-${Date.now()}`
+      id: `progress-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     };
 
-    // In a real app, this would be a POST request to the API
+    // Persist the new progress to localStorage
+    StorageService.addProgress(newProgress);
+
+    console.log(`✅ Created and persisted new progress record: ${newProgress.id}`);
     return newProgress;
   } catch (error) {
     console.error('Error creating progress:', error);
@@ -142,12 +189,15 @@ export const createProgress = async (progress: Omit<Progress, 'id'>): Promise<Pr
   }
 };
 
-// Update an existing progress record
+// Update an existing progress record with persistence
 export const updateProgress = async (progress: Progress): Promise<Progress> => {
   try {
     await delay(500);
 
-    // In a real app, this would be a PUT request to the API
+    // Persist the updated progress to localStorage
+    StorageService.updateProgress(progress);
+
+    console.log(`✅ Updated and persisted progress record: ${progress.id}`);
     return progress;
   } catch (error) {
     console.error('Error updating progress:', error);
@@ -155,13 +205,15 @@ export const updateProgress = async (progress: Progress): Promise<Progress> => {
   }
 };
 
-// Delete a progress record
+// Delete a progress record with persistence
 export const deleteProgress = async (id: string): Promise<void> => {
   try {
     await delay(500);
 
-    // In a real app, this would be a DELETE request to the API
-    return;
+    // Remove the progress from localStorage
+    StorageService.removeProgress(id);
+
+    console.log(`✅ Deleted and removed progress record: ${id}`);
   } catch (error) {
     console.error('Error deleting progress:', error);
     throw new Error('Failed to delete progress record');

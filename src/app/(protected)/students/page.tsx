@@ -54,32 +54,26 @@ export default function StudentsPage() {
   // Since filteredBarangays will only contain their assigned barangay, this works correctly
 
   // Handle add student
-  const handleAddStudent = async (data: StudentFormValues) => {
-    try {
-      await addStudent({
-        ...data,
-        assessment: data.assessment || '',
-        image: data.image || '/images/students/default-avatar.png'
-      });
-    } catch (error) {
-      console.error('Error adding student:', error);
-    }
+  const handleAddStudent = async (data: StudentFormValues): Promise<void> => {
+    await addStudent({
+      ...data,
+      assessment: data.assessment || '',
+      image: data.image || '/images/students/default-avatar.png'
+    });
   };
 
   // Handle edit student
-  const handleEditStudent = async (data: StudentFormValues) => {
-    if (!selectedStudent) return;
-
-    try {
-      await editStudent({
-        ...data,
-        id: selectedStudent.id,
-        assessment: data.assessment || '',
-        image: data.image || selectedStudent.image
-      });
-    } catch (error) {
-      console.error('Error updating student:', error);
+  const handleEditStudent = async (data: StudentFormValues): Promise<void> => {
+    if (!selectedStudent) {
+      throw new Error('No student selected for editing');
     }
+
+    await editStudent({
+      ...data,
+      id: selectedStudent.id,
+      assessment: data.assessment || '',
+      image: data.image || selectedStudent.image
+    });
   };
 
   // Handle delete student
@@ -119,7 +113,7 @@ export default function StudentsPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h1 className="text-2xl font-bold tracking-tight">STUDENT MASTERLIST</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">STUDENT MASTERLIST</h1>
       </div>
 
       {/* Barangay Tabs */}
@@ -134,7 +128,7 @@ export default function StudentsPage() {
       )}
 
       {/* Student Table */}
-      <div className="bg-white rounded-lg shadow-lg border-4 border-blue-600">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg border-4 border-blue-600 dark:border-blue-500">
         <div className="p-1">
           {students.loading ? (
             <StudentTableSkeleton />
@@ -166,7 +160,8 @@ export default function StudentsPage() {
         onOpenChange={setAddDialogOpen}
         title="Add New Student"
         description="Fill in the details to add a new student to the system."
-        barangays={barangays}
+        barangays={filteredBarangays}
+        user={user}
         onSubmit={handleAddStudent}
       />
 
@@ -178,7 +173,8 @@ export default function StudentsPage() {
           title="Edit Student"
           description="Update the student's information."
           student={selectedStudent}
-          barangays={barangays}
+          barangays={filteredBarangays}
+          user={user}
           onSubmit={handleEditStudent}
         />
       )}

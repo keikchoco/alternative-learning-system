@@ -58,9 +58,9 @@ export function StudentTable({ students, barangays, onEdit, onDelete, onRowClick
   });
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border border-gray-200 dark:border-gray-600">
       <Table>
-        <TableHeader className="bg-blue-600">
+        <TableHeader className="bg-blue-600 dark:bg-blue-700">
           <TableRow>
             <TableHead
               className="text-white font-bold cursor-pointer"
@@ -115,7 +115,7 @@ export function StudentTable({ students, barangays, onEdit, onDelete, onRowClick
         <TableBody>
           {sortedStudents.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+              <TableCell colSpan={6} className="text-center py-8 text-gray-500 dark:text-gray-400">
                 No students found
               </TableCell>
             </TableRow>
@@ -123,22 +123,22 @@ export function StudentTable({ students, barangays, onEdit, onDelete, onRowClick
             sortedStudents.map((student) => (
               <TableRow
                 key={student.id}
-                className="cursor-pointer hover:bg-blue-50 transition-colors"
+                className="cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors bg-white dark:bg-slate-800"
                 onClick={() => onRowClick?.(student)}
               >
-                <TableCell className="font-medium">{student.lrn}</TableCell>
-                <TableCell>{student.name}</TableCell>
+                <TableCell className="font-medium text-gray-900 dark:text-white">{student.lrn}</TableCell>
+                <TableCell className="text-gray-900 dark:text-white">{student.name}</TableCell>
                 <TableCell>
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                     student.status === 'active'
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'
+                      : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
                   }`}>
                     {student.status.toUpperCase()}
                   </span>
                 </TableCell>
-                <TableCell>{student.gender.toUpperCase()}</TableCell>
-                <TableCell>{student.address}</TableCell>
+                <TableCell className="text-gray-900 dark:text-white">{student.gender.toUpperCase()}</TableCell>
+                <TableCell className="text-gray-900 dark:text-white">{student.address}</TableCell>
                 <TableCell className="text-center">
                   <div className="flex justify-center space-x-2">
                     <Button

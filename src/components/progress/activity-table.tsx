@@ -67,7 +67,7 @@ export function ActivityTable({
   if (activities.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-500">
+        <p className="text-gray-500 dark:text-gray-400">
           No activities recorded for {moduleTitle} yet.
         </p>
       </div>
@@ -115,25 +115,25 @@ export function ActivityTable({
 
       {/* Activity Table */}
       <div className="overflow-x-auto">
-        <Table className="border-4 border-blue-600">
+        <Table className="border-4 border-blue-600 dark:border-blue-500">
           <TableHeader>
-            <TableRow className="bg-blue-600 hover:bg-blue-600">
-              <TableHead className="text-white font-bold text-left border-r-2 border-blue-500 px-4 py-3">
+            <TableRow className="bg-blue-600 dark:bg-blue-700 hover:bg-blue-600 dark:hover:bg-blue-700">
+              <TableHead className="text-white font-bold text-left border-r-2 border-blue-500 dark:border-blue-400 px-4 py-3">
                 Activity Name
               </TableHead>
-              <TableHead className="text-white font-bold text-left border-r-2 border-blue-500 px-4 py-3">
+              <TableHead className="text-white font-bold text-left border-r-2 border-blue-500 dark:border-blue-400 px-4 py-3">
                 Type
               </TableHead>
-              <TableHead className="text-white font-bold text-left border-r-2 border-blue-500 px-4 py-3">
+              <TableHead className="text-white font-bold text-left border-r-2 border-blue-500 dark:border-blue-400 px-4 py-3">
                 Score
               </TableHead>
-              <TableHead className="text-white font-bold text-left border-r-2 border-blue-500 px-4 py-3">
+              <TableHead className="text-white font-bold text-left border-r-2 border-blue-500 dark:border-blue-400 px-4 py-3">
                 Total
               </TableHead>
-              <TableHead className="text-white font-bold text-left border-r-2 border-blue-500 px-4 py-3">
+              <TableHead className="text-white font-bold text-left border-r-2 border-blue-500 dark:border-blue-400 px-4 py-3">
                 Date
               </TableHead>
-              <TableHead className="text-white font-bold text-left border-r-2 border-blue-500 px-4 py-3">
+              <TableHead className="text-white font-bold text-left border-r-2 border-blue-500 dark:border-blue-400 px-4 py-3">
                 Remarks
               </TableHead>
               <TableHead className="text-white font-bold text-left px-4 py-3">
@@ -147,24 +147,24 @@ export function ActivityTable({
               return (
                 <TableRow
                   key={actualIndex}
-                  className="hover:bg-gray-50 transition-colors border-b border-gray-200"
+                  className="hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-800"
                 >
-                  <TableCell className="font-medium border-r border-gray-200 px-4 py-3">
+                  <TableCell className="font-medium border-r border-gray-200 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white">
                     {activity.name}
                   </TableCell>
-                  <TableCell className="border-r border-gray-200 px-4 py-3">
+                  <TableCell className="border-r border-gray-200 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white">
                     {activity.type}
                   </TableCell>
-                  <TableCell className="border-r border-gray-200 px-4 py-3">
+                  <TableCell className="border-r border-gray-200 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white">
                     {activity.score}
                   </TableCell>
-                  <TableCell className="border-r border-gray-200 px-4 py-3">
+                  <TableCell className="border-r border-gray-200 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white">
                     {activity.total}
                   </TableCell>
-                  <TableCell className="border-r border-gray-200 px-4 py-3">
+                  <TableCell className="border-r border-gray-200 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white">
                     {formatDate(activity.date)}
                   </TableCell>
-                  <TableCell className="border-r border-gray-200 px-4 py-3">
+                  <TableCell className="border-r border-gray-200 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white">
                     {activity.remarks}
                   </TableCell>
                   <TableCell className="px-4 py-3">
@@ -173,7 +173,7 @@ export function ActivityTable({
                         variant="outline"
                         size="sm"
                         onClick={() => handleEditActivity(activity, actualIndex)}
-                        className="bg-blue-600 text-white hover:bg-blue-500 border-blue-600 hover:border-blue-500 cursor-pointer transition-all duration-200 hover:shadow-md"
+                        className="bg-blue-600 dark:bg-blue-700 text-white hover:bg-blue-500 dark:hover:bg-blue-600 border-blue-600 dark:border-blue-700 hover:border-blue-500 dark:hover:border-blue-600 cursor-pointer transition-all duration-200 hover:shadow-md"
                         title="Edit Activity"
                       >
                         <Edit className="h-3 w-3" />
@@ -182,7 +182,7 @@ export function ActivityTable({
                         variant="outline"
                         size="sm"
                         onClick={() => handleDeleteActivity(actualIndex)}
-                        className="bg-red-600 text-white hover:bg-red-500 border-red-600 hover:border-red-500 cursor-pointer transition-all duration-200 hover:shadow-md"
+                        className="bg-red-600 dark:bg-red-700 text-white hover:bg-red-500 dark:hover:bg-red-600 border-red-600 dark:border-red-700 hover:border-red-500 dark:hover:border-red-600 cursor-pointer transition-all duration-200 hover:shadow-md"
                         title="Delete Activity"
                       >
                         <Trash2 className="h-3 w-3" />
@@ -197,11 +197,11 @@ export function ActivityTable({
       </div>
 
       {/* Summary Statistics */}
-      <div className="bg-gray-100 rounded-lg p-4 mt-4">
-        <h4 className="font-bold text-gray-900 mb-3">Summary Statistics</h4>
+      <div className="bg-gray-100 dark:bg-slate-700 rounded-lg p-4 mt-4">
+        <h4 className="font-bold text-gray-900 dark:text-white mb-3">Summary Statistics</h4>
         <div className="text-sm">
-          <span className="text-gray-700">Total Activities: </span>
-          <span className="font-medium">{activities.length}</span>
+          <span className="text-gray-700 dark:text-gray-300">Total Activities: </span>
+          <span className="font-medium text-gray-900 dark:text-white">{activities.length}</span>
         </div>
       </div>
 

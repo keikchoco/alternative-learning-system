@@ -30,12 +30,34 @@ const initialProgressState: ProgressState = {
   error: null
 };
 
+// Define the progress slice interface
+interface ProgressSlice {
+  data: Progress[];
+  filteredData: Progress[];
+  filters: ProgressFilters;
+  statistics: ProgressStatistics;
+  loading: boolean;
+  error: string | null;
+  // Actions
+  loadProgress: () => Promise<void>;
+  setFilters: (filters: ProgressFilters) => void;
+  clearFilters: () => void;
+  createProgress: (progress: Omit<Progress, 'id'>) => Promise<Progress>;
+  updateProgress: (progress: Progress) => Promise<Progress>;
+  deleteProgress: (id: string) => Promise<void>;
+  addActivity: (progressId: string, activity: Activity) => Promise<Progress>;
+  updateActivity: (progressId: string, activityIndex: number, activity: Activity) => Promise<Progress>;
+  removeActivity: (progressId: string, activityIndex: number) => Promise<Progress>;
+  getProgressByStudentId: (studentId: string) => Progress[];
+  getStudentAverageScore: (studentId: string) => number;
+}
+
 // Create the progress slice
 export const createProgressSlice: StateCreator<
   StoreState,
   [['zustand/devtools', never], ['zustand/persist', unknown], ['zustand/immer', never]],
   [],
-  { progress: any }
+  { progress: ProgressSlice }
 > = (set, get) => ({
   progress: {
     ...initialProgressState,
@@ -194,19 +216,19 @@ export const createProgressSlice: StateCreator<
     // Update an activity in a progress record
     updateActivity: async (progressId: string, activityIndex: number, updatedActivity: Activity) => {
       const progressRecord = get().progress.data.find(p => p.id === progressId);
-      
+
       if (!progressRecord) {
         throw new Error('Progress record not found');
       }
-      
+
       const updatedActivities = [...progressRecord.activities];
       updatedActivities[activityIndex] = updatedActivity;
-      
+
       const updatedProgress: Progress = {
         ...progressRecord,
         activities: updatedActivities
       };
-      
+
       return get().progress.updateProgress(updatedProgress);
     },
     

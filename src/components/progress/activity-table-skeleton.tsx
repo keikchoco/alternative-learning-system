@@ -17,24 +17,24 @@ export function ActivityTableSkeleton() {
   return (
     <div className="space-y-4">
       <Skeleton className="h-6 w-48" />
-      
+
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-blue-600 hover:bg-blue-600">
-              <TableHead className="text-white font-bold text-center border-r border-blue-500">
+            <TableRow className="bg-blue-600 dark:bg-blue-700 hover:bg-blue-600 dark:hover:bg-blue-700">
+              <TableHead className="text-white font-bold text-center border-r border-blue-500 dark:border-blue-400">
                 ACTIVITY NAME
               </TableHead>
-              <TableHead className="text-white font-bold text-center border-r border-blue-500">
+              <TableHead className="text-white font-bold text-center border-r border-blue-500 dark:border-blue-400">
                 TYPE
               </TableHead>
-              <TableHead className="text-white font-bold text-center border-r border-blue-500">
+              <TableHead className="text-white font-bold text-center border-r border-blue-500 dark:border-blue-400">
                 SCORE
               </TableHead>
-              <TableHead className="text-white font-bold text-center border-r border-blue-500">
+              <TableHead className="text-white font-bold text-center border-r border-blue-500 dark:border-blue-400">
                 PERCENTAGE
               </TableHead>
-              <TableHead className="text-white font-bold text-center border-r border-blue-500">
+              <TableHead className="text-white font-bold text-center border-r border-blue-500 dark:border-blue-400">
                 DATE
               </TableHead>
               <TableHead className="text-white font-bold text-center">
@@ -44,25 +44,25 @@ export function ActivityTableSkeleton() {
           </TableHeader>
           <TableBody>
             {loadingRows.map((index) => (
-              <TableRow 
+              <TableRow
                 key={index}
                 className={`${
-                  index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+                  index % 2 === 0 ? 'bg-gray-50 dark:bg-slate-700' : 'bg-white dark:bg-slate-800'
                 }`}
               >
-                <TableCell className="text-center border-r border-gray-200">
+                <TableCell className="text-center border-r border-gray-200 dark:border-gray-600">
                   <Skeleton className="h-4 w-32 mx-auto" />
                 </TableCell>
-                <TableCell className="text-center border-r border-gray-200">
+                <TableCell className="text-center border-r border-gray-200 dark:border-gray-600">
                   <Skeleton className="h-6 w-16 mx-auto" />
                 </TableCell>
-                <TableCell className="text-center border-r border-gray-200">
+                <TableCell className="text-center border-r border-gray-200 dark:border-gray-600">
                   <Skeleton className="h-4 w-12 mx-auto" />
                 </TableCell>
-                <TableCell className="text-center border-r border-gray-200">
+                <TableCell className="text-center border-r border-gray-200 dark:border-gray-600">
                   <Skeleton className="h-6 w-12 mx-auto" />
                 </TableCell>
-                <TableCell className="text-center border-r border-gray-200">
+                <TableCell className="text-center border-r border-gray-200 dark:border-gray-600">
                   <Skeleton className="h-4 w-20 mx-auto" />
                 </TableCell>
                 <TableCell className="text-center">
@@ -75,7 +75,7 @@ export function ActivityTableSkeleton() {
       </div>
 
       {/* Summary Statistics Skeleton */}
-      <div className="bg-gray-50 rounded-lg p-4 mt-4">
+      <div className="bg-gray-50 dark:bg-slate-700 rounded-lg p-4 mt-4">
         <Skeleton className="h-5 w-32 mb-2" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {Array.from({ length: 4 }, (_, i) => (

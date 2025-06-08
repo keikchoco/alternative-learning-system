@@ -109,10 +109,15 @@ export class CacheManager {
    * Clear only store cache (preserve auth data)
    */
   static clearStoreCache(): void {
+    // Skip on server-side rendering
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     console.log('🧹 Clearing store cache...');
-    
+
     const keysToRemove: string[] = [];
-    
+
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key && key.startsWith(this.STORE_KEY)) {
@@ -148,7 +153,12 @@ export class CacheManager {
    */
   static validateCache(): { isValid: boolean; issues: string[] } {
     const issues: string[] = [];
-    
+
+    // Skip on server-side rendering
+    if (typeof window === 'undefined') {
+      return { isValid: true, issues: [] };
+    }
+
     try {
       // Check store data structure
       const storeData = this.getStoreData();
@@ -156,7 +166,7 @@ export class CacheManager {
         if (!storeData.state) {
           issues.push('Store data missing state property');
         }
-        
+
         if (storeData.state && typeof storeData.state !== 'object') {
           issues.push('Store state is not an object');
         }

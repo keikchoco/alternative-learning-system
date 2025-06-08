@@ -18,7 +18,7 @@ export function ProgressTableSkeleton() {
     <div className="overflow-x-auto">
       <Table>
         <TableHeader>
-          <TableRow className="bg-blue-600 hover:bg-blue-600">
+          <TableRow className="bg-blue-600 dark:bg-blue-700 hover:bg-blue-600 dark:hover:bg-blue-700">
             <TableHead className="text-white font-bold text-left">
               LEARNER'S ID NO.
             </TableHead>
@@ -41,7 +41,9 @@ export function ProgressTableSkeleton() {
             <TableRow
               key={index}
               className={`${
-                index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+                index % 2 === 0
+                  ? 'bg-gray-50 dark:bg-slate-700'
+                  : 'bg-white dark:bg-slate-800'
               }`}
             >
               <TableCell className="text-left">

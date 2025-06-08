@@ -34,10 +34,16 @@ const calculateEventStatistics = (events: Event[]): EventStatistics => {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+  // Helper to parse event date string without timezone issues
+  const parseEventDate = (dateString: string): Date => {
+    const [year, month, day] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day); // month is 0-indexed
+  };
+
   return {
     totalEvents: events.length,
-    upcomingEvents: events.filter(event => new Date(event.date) >= today).length,
-    completedEvents: events.filter(event => new Date(event.date) < today).length,
+    upcomingEvents: events.filter(event => parseEventDate(event.date) >= today).length,
+    completedEvents: events.filter(event => parseEventDate(event.date) < today).length,
     typeDistribution: events.reduce((acc, event) => {
       acc[event.type] = (acc[event.type] || 0) + 1;
       return acc;
@@ -235,12 +241,18 @@ export const useEventsStore = create<{
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+      // Helper to parse event date string without timezone issues
+      const parseEventDate = (dateString: string): Date => {
+        const [year, month, day] = dateString.split('-').map(Number);
+        return new Date(year, month - 1, day); // month is 0-indexed
+      };
+
       return events.data
         .filter(event => {
-          const eventDate = new Date(event.date);
+          const eventDate = parseEventDate(event.date);
           return eventDate >= today;
         })
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .sort((a, b) => parseEventDate(a.date).getTime() - parseEventDate(b.date).getTime())
         .slice(0, limit);
     },
   }))

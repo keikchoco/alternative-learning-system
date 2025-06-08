@@ -74,7 +74,7 @@ export function ProgressTable({
     <div className="overflow-x-auto">
       <Table>
         <TableHeader>
-          <TableRow className="bg-blue-600 hover:bg-blue-600">
+          <TableRow className="bg-blue-600 dark:bg-blue-700 hover:bg-blue-600 dark:hover:bg-blue-700">
             <TableHead className="text-white font-bold text-left">
               LEARNER'S ID NO.
             </TableHead>
@@ -97,20 +97,22 @@ export function ProgressTable({
             <TableRow
               key={student.id}
               className={`${
-                index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-              } hover:bg-blue-50 transition-colors cursor-pointer`}
+                index % 2 === 0
+                  ? 'bg-gray-50 dark:bg-slate-700'
+                  : 'bg-white dark:bg-slate-800'
+              } hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer`}
               onClick={() => handleActivitySummary(student)}
             >
-              <TableCell className="text-left font-medium">
+              <TableCell className="text-left font-medium text-gray-900 dark:text-white">
                 {student.lrn}
               </TableCell>
-              <TableCell className="text-left">
+              <TableCell className="text-left text-gray-900 dark:text-white">
                 {student.name}
               </TableCell>
-              <TableCell className="text-left">
+              <TableCell className="text-left text-gray-900 dark:text-white">
                 {student.program}
               </TableCell>
-              <TableCell className="text-left">
+              <TableCell className="text-left text-gray-900 dark:text-white">
                 Group {student.group}
               </TableCell>
               <TableCell className="text-left">
@@ -121,7 +123,7 @@ export function ProgressTable({
                   }}
                   variant="outline"
                   size="sm"
-                  className="bg-green-600 text-white hover:bg-green-500 border-green-600 hover:border-green-500 cursor-pointer transition-all duration-200 hover:shadow-md"
+                  className="bg-green-600 dark:bg-green-700 text-white hover:bg-green-500 dark:hover:bg-green-600 border-green-600 dark:border-green-700 hover:border-green-500 dark:hover:border-green-600 cursor-pointer transition-all duration-200 hover:shadow-md"
                 >
                   VIEW MODULES
                 </Button>

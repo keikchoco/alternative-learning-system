@@ -55,7 +55,7 @@ export default function ProgressPage() {
       )}
 
       {/* Progress Table */}
-      <div className="bg-white rounded-lg shadow-lg border-4 border-blue-600">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg border-4 border-blue-600 dark:border-blue-500">
         <div className="p-1">
           {loadingStudents ? (
             <ProgressTableSkeleton />

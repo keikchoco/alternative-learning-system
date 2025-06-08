@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "../styles/accessibility.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -137,6 +138,10 @@
   border-radius: 0 0 8px 8px;
 }
 
+.dark .rbc-calendar {
+  background: #1e293b;
+}
+
 .rbc-header {
   background-color: #2563eb !important;
   color: white !important;
@@ -144,6 +149,10 @@
   padding: 12px 8px;
   border: none !important;
   text-align: center;
+}
+
+.dark .rbc-header {
+  background-color: #1e40af !important;
 }
 
 .rbc-month-view {
@@ -157,8 +166,18 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
+.dark .rbc-date-cell {
+  border-right: 1px solid #475569;
+  border-bottom: 1px solid #475569;
+  color: #f8fafc;
+}
+
 .rbc-date-cell.rbc-off-range {
   color: #9ca3af;
+}
+
+.dark .rbc-date-cell.rbc-off-range {
+  color: #64748b;
 }
 
 .rbc-date-cell.rbc-today {
@@ -167,13 +186,27 @@
   color: #1d4ed8;
 }
 
+.dark .rbc-date-cell.rbc-today {
+  background-color: #1e3a8a;
+  color: #93c5fd;
+}
+
 .rbc-day-bg {
   border-right: 1px solid #e5e7eb;
   border-bottom: 1px solid #e5e7eb;
 }
 
+.dark .rbc-day-bg {
+  border-right: 1px solid #475569;
+  border-bottom: 1px solid #475569;
+}
+
 .rbc-day-bg.rbc-today {
   background-color: #dbeafe;
+}
+
+.dark .rbc-day-bg.rbc-today {
+  background-color: #1e3a8a;
 }
 
 .rbc-event {
@@ -191,6 +224,10 @@
   color: #3b82f6;
   font-weight: 500;
   font-size: 11px;
+}
+
+.dark .rbc-show-more {
+  color: #60a5fa;
 }
 
 .rbc-month-row {
@@ -226,6 +263,10 @@
   scrollbar-color: #cbd5e1 #f1f5f9;
 }
 
+.dark .dashboard-scrollable {
+  scrollbar-color: #475569 #1e293b;
+}
+
 .dashboard-scrollable::-webkit-scrollbar {
   width: 6px;
 }
@@ -235,13 +276,25 @@
   border-radius: 3px;
 }
 
+.dark .dashboard-scrollable::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
 .dashboard-scrollable::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 3px;
 }
 
+.dark .dashboard-scrollable::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
 .dashboard-scrollable::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+.dark .dashboard-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
 /* Mobile responsive adjustments */
@@ -509,6 +562,10 @@
   scrollbar-color: #d1d5db #f3f4f6;
 }
 
+.dark .scrollbar-thin {
+  scrollbar-color: #475569 #1e293b;
+}
+
 .scrollbar-thin::-webkit-scrollbar {
   height: 6px;
 }
@@ -518,13 +575,25 @@
   border-radius: 3px;
 }
 
+.dark .scrollbar-thin::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
 .scrollbar-thin::-webkit-scrollbar-thumb {
   background: #d1d5db;
   border-radius: 3px;
 }
 
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
 /* Smooth scrolling for tabs on mobile */
@@ -577,13 +646,25 @@
   border-radius: 2px;
 }
 
+.dark .tooltip-scroll::-webkit-scrollbar-track {
+  background: #334155;
+}
+
 .tooltip-scroll::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 2px;
 }
 
+.dark .tooltip-scroll::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
 .tooltip-scroll::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+.dark .tooltip-scroll::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
 /* Tooltip interaction bridge */
@@ -610,6 +691,184 @@
   background: transparent;
   z-index: -2;
   pointer-events: auto;
+}
+
+/* Leaflet Map Styles */
+@import 'leaflet/dist/leaflet.css';
+
+/* Map container isolation to prevent reuse conflicts */
+.map-wrapper {
+  isolation: isolate;
+  position: relative;
+  z-index: 1;
+}
+
+.map-wrapper .leaflet-container {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Custom map popup styles */
+.leaflet-popup-content-wrapper {
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  border: 2px solid #2563eb !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-tip {
+  border-top-color: #2563eb !important;
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+  background: white !important;
+}
+
+/* Map container styling */
+.leaflet-container {
+  font-family: inherit !important;
+}
+
+/* Custom marker cluster styles */
+.marker-cluster-small {
+  background-color: rgba(37, 99, 235, 0.6) !important;
+}
+
+.marker-cluster-small div {
+  background-color: rgba(37, 99, 235, 0.8) !important;
+}
+
+.marker-cluster-medium {
+  background-color: rgba(37, 99, 235, 0.7) !important;
+}
+
+.marker-cluster-medium div {
+  background-color: rgba(37, 99, 235, 0.9) !important;
+}
+
+.marker-cluster-large {
+  background-color: rgba(37, 99, 235, 0.8) !important;
+}
+
+.marker-cluster-large div {
+  background-color: #2563eb !important;
+}
+
+/* Map loading animation */
+.map-loading {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Enhanced Sidebar Styles */
+.sidebar-gradient {
+  background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 50%, #1d4ed8 100%);
+}
+
+/* Sidebar navigation item hover effects */
+.nav-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.nav-item:hover::before {
+  left: 100%;
+}
+
+/* Smooth scrollbar for sidebar navigation */
+.sidebar-nav {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.3);
+  border-radius: 2px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.5);
+}
+
+/* Tooltip animations */
+.tooltip-enter {
+  animation: tooltipSlideIn 0.2s ease-out;
+}
+
+@keyframes tooltipSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Enhanced button hover effects */
+.btn-hover-lift {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-hover-lift:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Sidebar backdrop blur effect */
+.sidebar-backdrop {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Active navigation indicator animation */
+.nav-indicator {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: 2rem;
+    opacity: 1;
+  }
 }
 
 

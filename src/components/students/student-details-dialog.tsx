@@ -160,7 +160,7 @@ export function StudentDetailsDialog({
             </h3>
             <div className="bg-gray-50 dark:bg-slate-700 rounded-lg p-4">
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Internal Student ID</p>
-              <p className="text-sm text-gray-600 dark:text-gray-300 font-mono">{student.id}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 font-mono">{student._id}</p>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">This is the system-generated unique identifier for this student record.</p>
             </div>
           </div>

@@ -115,7 +115,7 @@ export class StorageService {
   static updateStudent(updatedStudent: Student): void {
     const existingStudents = this.loadStudents() || [];
     const updatedStudents = existingStudents.map(student =>
-      student.id === updatedStudent.id ? updatedStudent : student
+      student._id === updatedStudent._id ? updatedStudent : student
     );
     this.saveStudents(updatedStudents);
   }
@@ -125,7 +125,7 @@ export class StorageService {
    */
   static removeStudent(studentId: string): void {
     const existingStudents = this.loadStudents() || [];
-    const updatedStudents = existingStudents.filter(student => student.id !== studentId);
+    const updatedStudents = existingStudents.filter(student => student._id !== studentId);
     this.saveStudents(updatedStudents);
   }
 
@@ -259,14 +259,6 @@ export class StorageService {
    */
   static async initializeFromStaticData(): Promise<void> {
     try {
-      // Only initialize if we don't have persisted data
-      if (!this.hasStudentData()) {
-        console.log('📥 Initializing students from static data...');
-        const studentsModule = await import('@/data/students.json');
-        const students: Student[] = studentsModule.default as Student[];
-        this.saveStudents(students);
-      }
-
       if (!this.hasBarangayData()) {
         console.log('📥 Initializing barangays from static data...');
         const barangaysModule = await import('@/data/barangays.json');
@@ -305,7 +297,7 @@ export class StorageService {
           issues.push('Students data is not an array');
         } else if (students.length > 0) {
           const firstStudent = students[0];
-          if (!firstStudent.id || !firstStudent.lrn || !firstStudent.name) {
+          if (!firstStudent._id || !firstStudent.lrn || !firstStudent.name) {
             issues.push('Student data structure is invalid');
           }
         }

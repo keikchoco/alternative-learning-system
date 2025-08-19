@@ -95,7 +95,7 @@ export function ProgressTable({
         <TableBody>
           {filteredStudents.map((student, index) => (
             <TableRow
-              key={student.id}
+              key={student._id}
               className={`${
                 index % 2 === 0
                   ? 'bg-gray-50 dark:bg-slate-700'

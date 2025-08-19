@@ -122,7 +122,7 @@ export function StudentTable({ students, barangays, onEdit, onDelete, onRowClick
           ) : (
             sortedStudents.map((student) => (
               <TableRow
-                key={student.id}
+                key={student._id}
                 className="cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors bg-white dark:bg-slate-800"
                 onClick={() => onRowClick?.(student)}
               >

@@ -227,7 +227,7 @@ export const useProgressStore = create<{
 
     // Get student by ID
     getStudentById: (studentId: string) => {
-      return get().students.find(student => student.id === studentId);
+      return get().students.find(student => student._id === studentId);
     },
 
     // Get student by LRN

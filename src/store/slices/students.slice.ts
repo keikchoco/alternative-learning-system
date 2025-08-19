@@ -135,7 +135,7 @@ export const createStudentSlice: StateCreator<
         const result = await apiUpdateStudent(updatedStudent);
         
         set(state => {
-          const index = state.students.data.findIndex(s => s.id === updatedStudent.id);
+          const index = state.students.data.findIndex(s => s.id === updatedStudent._id);
           if (index !== -1) {
             state.students.data[index] = result;
           }

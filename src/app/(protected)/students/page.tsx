@@ -61,14 +61,15 @@ export default function StudentsPage() {
   };
 
   // Handle edit student
-  const handleEditStudent = async (data: StudentFormValues): Promise<void> => {
+  const handleEditStudent = async (data: StudentFormValues): 
+  Promise<void> => {
     if (!selectedStudent) {
       throw new Error('No student selected for editing');
     }
-
+    console.log('Editing student:', selectedStudent);
     await editStudent({
       ...data,
-      id: selectedStudent.id,
+      _id: selectedStudent._id,
       assessment: data.assessment || '',
       image: data.image || selectedStudent.image
     });
@@ -79,7 +80,7 @@ export default function StudentsPage() {
     if (!selectedStudent) return;
 
     try {
-      await removeStudent(selectedStudent.id);
+      await removeStudent(selectedStudent._id);
     } catch (error) {
       console.error('Error deleting student:', error);
     }

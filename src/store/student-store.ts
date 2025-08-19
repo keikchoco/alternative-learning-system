@@ -42,7 +42,7 @@ export const useStudentStore = create<{
   setSearchQuery: (query: string) => void;
   setSelectedBarangay: (barangayId: string) => void;
   filterStudents: () => void;
-  addStudent: (student: Omit<Student, 'id'>) => Promise<Student>;
+  addStudent: (student: Omit<Student, '_id'>) => Promise<Student>;
   editStudent: (student: Student) => Promise<Student>;
   removeStudent: (id: string) => Promise<void>;
   initializeWithUser: (user: User | null) => Promise<void>;
@@ -175,7 +175,7 @@ export const useStudentStore = create<{
           filtered = filtered.filter(student =>
             student.name.toLowerCase().includes(query) ||
             student.lrn.toLowerCase().includes(query) ||
-            student.id.toLowerCase().includes(query) ||
+            student._id.toLowerCase().includes(query) ||
             student.address.toLowerCase().includes(query) ||
             student.program.toLowerCase().includes(query) ||
             student.status.toLowerCase().includes(query) ||
@@ -188,7 +188,7 @@ export const useStudentStore = create<{
     },
 
     // Add a new student
-    addStudent: async (studentData: Omit<Student, 'id'>) => {
+    addStudent: async (studentData: Omit<Student, '_id'>) => {
       set(state => {
         state.students.loading = true;
         state.students.error = null;
@@ -226,7 +226,7 @@ export const useStudentStore = create<{
         const result = await updateStudent(updatedStudent);
 
         set(state => {
-          const index = state.students.data.findIndex(s => s.id === updatedStudent.id);
+          const index = state.students.data.findIndex(s => s._id === updatedStudent._id);
           if (index !== -1) {
             state.students.data[index] = result;
           }
@@ -257,7 +257,7 @@ export const useStudentStore = create<{
         await deleteStudent(id);
 
         set(state => {
-          state.students.data = state.students.data.filter(s => s.id !== id);
+          state.students.data = state.students.data.filter(s => s._id !== id);
           state.students.loading = false;
         });
 

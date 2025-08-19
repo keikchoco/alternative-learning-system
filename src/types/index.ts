@@ -30,7 +30,7 @@ export interface Event {
 
 // Student Interface
 export interface Student {
-  id: string;
+  _id: string;
   lrn: string; // Learner Reference Number
   name: string;
   status: Status;

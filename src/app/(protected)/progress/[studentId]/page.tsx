@@ -1,25 +1,27 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { useProgressStore } from '@/store/progress-store';
-import { useStore } from '@/store';
-import { Student, Module, Progress, Activity } from '@/types';
-import Image from 'next/image';
-import { shallow } from 'zustand/shallow';
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useProgressStore } from "@/store/progress-store";
+import { useStore } from "@/store";
+import { Student, Module, Progress, Activity } from "@/types";
+import Image from "next/image";
+import { shallow } from "zustand/shallow";
 
 // Import static data directly as fallback
-import studentsData from '@/data/students.json';
-import progressData from '@/data/progress.json';
-import modulesData from '@/data/modules.json';
+import studentsData from "@/data/students.json";
+import progressData from "@/data/progress.json";
+import modulesData from "@/data/modules.json";
 
 // Components
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { ActivityTable } from '@/components/progress/activity-table';
-import { ActivityTableSkeleton } from '@/components/progress/activity-table-skeleton';
-import { ErrorBoundary } from '@/components/error-boundary';
-import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ActivityTable } from "@/components/progress/activity-table";
+import { ActivityTableSkeleton } from "@/components/progress/activity-table-skeleton";
+import { ErrorBoundary } from "@/components/error-boundary";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { deleteProgress, fetchProgress, updateProgress } from "@/services/api";
+import { set } from "zod";
 
 // Custom hook to safely manage store subscriptions
 function useStableStoreData() {
@@ -30,7 +32,7 @@ function useStableStoreData() {
     loadProgress: null as any,
     progressLoading: false,
     students: [] as Student[],
-    loadStudents: null as any
+    loadStudents: null as any,
   });
 
   const [progressStoreData, setProgressStoreData] = useState({
@@ -39,7 +41,7 @@ function useStableStoreData() {
     updateActivity: null as any,
     deleteActivity: null as any,
     fetchStudents: null as any,
-    fetchProgress: null as any
+    fetchProgress: null as any,
   });
 
   const isInitialized = useRef(false);
@@ -59,7 +61,7 @@ function useStableStoreData() {
         progressLoading: state.progress?.loading || false,
         // Add students data from main store
         students: state.students?.data || [],
-        loadStudents: null // Remove action access since it's not available in types
+        loadStudents: null, // Remove action access since it's not available in types
       });
     });
 
@@ -75,7 +77,7 @@ function useStableStoreData() {
         updateActivity: state.updateActivity,
         deleteActivity: state.deleteActivity,
         fetchStudents: state.fetchStudents,
-        fetchProgress: state.fetchProgress
+        fetchProgress: state.fetchProgress,
       });
     });
 
@@ -103,29 +105,33 @@ function StudentActivitySummaryPageContent() {
     students,
     loadStudents,
     getFilteredStudents,
-    updateActivity,
-    deleteActivity,
+    // updateActivity,
+    // deleteActivity,
     fetchStudents,
-    fetchProgress
   } = useStableStoreData();
 
   // Create our own getStudentByLrn function using main store data with fallback
-  const getStudentByLrn = useCallback((lrn: string) => {
-    // First try to find in store data
-    let found = students.find(student => student.lrn === lrn);
+  const getStudentByLrn = useCallback(
+    (lrn: string) => {
+      // First try to find in store data
+      let found = students.find((student) => student.lrn === lrn);
 
-    // If not found in store, use static data as fallback
-    if (!found) {
-      found = studentsData.find(student => student.lrn === lrn) as Student | undefined;
-    }
+      // If not found in store, use static data as fallback
+      if (!found) {
+        found = studentsData.find((student) => student.lrn === lrn) as
+          | Student
+          | undefined;
+      }
 
-    return found;
-  }, [students]);
+      return found;
+    },
+    [students]
+  );
 
   // Local state
   const [student, setStudent] = useState<Student | null>(null);
   const [studentProgress, setStudentProgress] = useState<Progress[]>([]);
-  const [selectedModule, setSelectedModule] = useState<string>('');
+  const [selectedModule, setSelectedModule] = useState<string>("");
   const [availableModules, setAvailableModules] = useState<Module[]>([]);
   const [showEditSuccess, setShowEditSuccess] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
@@ -138,25 +144,20 @@ function StudentActivitySummaryPageContent() {
         setIsInitialLoading(true);
 
         // Load data from progress store (main store actions are not available)
-        // The main store data will be used as fallback if progress store is empty
 
-        // Also load students and progress data from progress store for navigation
-        if (fetchStudents && typeof fetchStudents === 'function') {
-          await fetchStudents();
-        }
-
-        if (fetchProgress && typeof fetchProgress === 'function') {
-          await fetchProgress();
+        if (student) {
+          const res = await fetchProgress(student.lrn);
+          setStudentProgress(res);
         }
       } catch (error) {
-        console.error('Error loading data:', error);
+        console.error("Error loading data:", error);
       } finally {
         setIsInitialLoading(false);
       }
     };
 
     loadData();
-  }, []); // Empty dependency array - run once on mount
+  }, [student]); // Run on student update
 
   // Get student data when studentId changes
   useEffect(() => {
@@ -174,11 +175,13 @@ function StudentActivitySummaryPageContent() {
   const studentProgressRecords = useMemo(() => {
     if (student) {
       // First try store data
-      let progressRecords = progress.filter(p => p.studentId === student.lrn);
+      let progressRecords = progress.filter((p) => p.studentId === student.lrn);
 
       // If no progress in store, use static data as fallback
       if (progressRecords.length === 0) {
-        progressRecords = progressData.filter(p => p.studentId === student.lrn) as Progress[];
+        progressRecords = progressData.filter(
+          (p) => p.studentId === student.lrn
+        ) as Progress[];
       }
 
       return progressRecords;
@@ -197,8 +200,10 @@ function StudentActivitySummaryPageContent() {
         modulesList = modulesData as Module[];
       }
 
-      return modulesList.filter(module =>
-        module.levels.includes(student.program) || module.levels.includes('All Programs')
+      return modulesList.filter(
+        (module) =>
+          module.levels.includes(student.program) ||
+          module.levels.includes("All Programs")
       );
     }
     return emptyAvailableModules;
@@ -222,7 +227,7 @@ function StudentActivitySummaryPageContent() {
 
   // Handle back navigation
   const handleBack = useCallback(() => {
-    router.push('/progress');
+    router.push("/progress");
   }, [router]);
 
   // Create stable empty array for navigation
@@ -230,24 +235,28 @@ function StudentActivitySummaryPageContent() {
 
   // Memoize navigation info to prevent recalculation
   const navigationInfo = useMemo(() => {
-    if (!getFilteredStudents) return {
-      filteredStudents: emptyFilteredStudents,
-      currentStudentIndex: -1,
-      hasPrevious: false,
-      hasNext: false
-    };
+    if (!getFilteredStudents)
+      return {
+        filteredStudents: emptyFilteredStudents,
+        currentStudentIndex: -1,
+        hasPrevious: false,
+        hasNext: false,
+      };
 
     const filteredStudents = getFilteredStudents();
-    const currentStudentIndex = filteredStudents.findIndex((s: Student) => s.lrn === studentId);
+    const currentStudentIndex = filteredStudents.findIndex(
+      (s: Student) => s.lrn === studentId
+    );
     return {
       filteredStudents,
       currentStudentIndex,
       hasPrevious: currentStudentIndex > 0,
-      hasNext: currentStudentIndex < filteredStudents.length - 1
+      hasNext: currentStudentIndex < filteredStudents.length - 1,
     };
   }, [getFilteredStudents, studentId, emptyFilteredStudents]);
 
-  const { filteredStudents, currentStudentIndex, hasPrevious, hasNext } = navigationInfo;
+  const { filteredStudents, currentStudentIndex, hasPrevious, hasNext } =
+    navigationInfo;
 
   // Handle student navigation with useCallback to prevent recreation
   const handlePreviousStudent = useCallback(() => {
@@ -258,7 +267,13 @@ function StudentActivitySummaryPageContent() {
       // Reset navigation state after a short delay
       setTimeout(() => setIsNavigating(false), 500);
     }
-  }, [hasPrevious, isNavigating, filteredStudents, currentStudentIndex, router]);
+  }, [
+    hasPrevious,
+    isNavigating,
+    filteredStudents,
+    currentStudentIndex,
+    router,
+  ]);
 
   const handleNextStudent = useCallback(() => {
     if (hasNext && !isNavigating) {
@@ -271,64 +286,80 @@ function StudentActivitySummaryPageContent() {
   }, [hasNext, isNavigating, filteredStudents, currentStudentIndex, router]);
 
   // Handle keyboard navigation with memoized handler
-  const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    // Only handle navigation if no input/textarea is focused
-    if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') {
-      return;
-    }
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      // Only handle navigation if no input/textarea is focused
+      if (
+        document.activeElement?.tagName === "INPUT" ||
+        document.activeElement?.tagName === "TEXTAREA"
+      ) {
+        return;
+      }
 
-    if (event.key === 'ArrowLeft') {
-      event.preventDefault();
-      handlePreviousStudent();
-    } else if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      handleNextStudent();
-    }
-  }, [handlePreviousStudent, handleNextStudent]);
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        handlePreviousStudent();
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        handleNextStudent();
+      }
+    },
+    [handlePreviousStudent, handleNextStudent]
+  );
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
   // Activity handlers with useCallback to prevent recreation
-  const handleActivityUpdate = useCallback(async (activityIndex: number, activity: Activity) => {
-    try {
-      if (updateActivity) {
-        await updateActivity(studentId, selectedModule, activityIndex, activity);
+  const handleActivityUpdate = useCallback(
+    async (activityIndex: number, activity: Activity) => {
+      try {
+        console.log("Updating activity:", activity);
+        await updateProgress(
+          studentId,
+          selectedModule,
+          activityIndex,
+          activity
+        );
+        // Refresh progress data from progress store
+        if (student) {
+          const res = await fetchProgress(student.lrn);
+          setStudentProgress(res);
+        }
+        setShowEditSuccess(true);
+        setTimeout(() => setShowEditSuccess(false), 3000);
+      } catch (error) {
+        console.error("Error updating activity:", error);
+        alert("Failed to update activity. Please try again.");
       }
-      // Refresh progress data from progress store
-      if (fetchProgress && typeof fetchProgress === 'function') {
-        await fetchProgress();
-      }
-      setShowEditSuccess(true);
-      setTimeout(() => setShowEditSuccess(false), 3000);
-    } catch (error) {
-      console.error('Error updating activity:', error);
-      alert('Failed to update activity. Please try again.');
-    }
-  }, [updateActivity, studentId, selectedModule, fetchProgress]);
+    },
+    [studentId, selectedModule, fetchProgress]
+  );
 
-  const handleActivityDelete = useCallback(async (activityIndex: number) => {
-    try {
-      if (deleteActivity) {
-        await deleteActivity(studentId, selectedModule, activityIndex);
+  const handleActivityDelete = useCallback(
+    async (activityIndex: number) => {
+      try {
+        await deleteProgress(studentId, selectedModule, activityIndex);
+        // Refresh progress data from progress store
+        if (student) {
+          const res = await fetchProgress(student.lrn);
+          setStudentProgress(res);
+        }
+        setShowEditSuccess(true);
+        setTimeout(() => setShowEditSuccess(false), 3000);
+      } catch (error) {
+        console.error("Error deleting activity:", error);
+        alert("Failed to delete activity. Please try again.");
       }
-      // Refresh progress data from progress store
-      if (fetchProgress && typeof fetchProgress === 'function') {
-        await fetchProgress();
-      }
-      setShowEditSuccess(true);
-      setTimeout(() => setShowEditSuccess(false), 3000);
-    } catch (error) {
-      console.error('Error deleting activity:', error);
-      alert('Failed to delete activity. Please try again.');
-    }
-  }, [deleteActivity, studentId, selectedModule, fetchProgress]);
+    },
+    [studentId, selectedModule, fetchProgress]
+  );
 
   // Get current module progress with memoization
   const currentModuleProgress = useMemo(() => {
-    return studentProgress.find(p => p.moduleId === selectedModule);
+    return studentProgress.find((p) => p.moduleId === selectedModule);
   }, [studentProgress, selectedModule]);
 
   // Show loading state during initial data load
@@ -358,8 +389,6 @@ function StudentActivitySummaryPageContent() {
             <ArrowLeft className="h-4 w-4" />
             Back to Progress
           </Button>
-
-
         </div>
         <div className="text-center py-8">
           <p className="text-gray-500">Student not found.</p>
@@ -387,8 +416,6 @@ function StudentActivitySummaryPageContent() {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
 
-
-
               {/* Student Image */}
               <div className="relative h-16 w-16 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
                 {student.image ? (
@@ -396,31 +423,44 @@ function StudentActivitySummaryPageContent() {
                     src={student.image}
                     alt={student.name}
                     fill
-                    style={{ objectFit: 'cover' }}
+                    style={{ objectFit: "cover" }}
                     className="rounded-full"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
+                      target.style.display = "none";
                     }}
                   />
                 ) : null}
                 {/* Initials fallback */}
                 <span className="text-gray-600 dark:text-gray-300 font-bold text-lg">
-                  {student.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                  {student.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .substring(0, 2)
+                    .toUpperCase()}
                 </span>
               </div>
 
               {/* Student Details */}
               <div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white uppercase">{student.name}</h2>
-                <p className="text-gray-700 dark:text-gray-300 font-medium">{student.lrn}</p>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white uppercase">
+                  {student.name}
+                </h2>
+                <p className="text-gray-700 dark:text-gray-300 font-medium">
+                  {student.lrn}
+                </p>
               </div>
             </div>
 
             {/* Right side - Program info */}
             <div className="text-right">
-              <p className="text-gray-900 dark:text-white font-medium">{student.program}</p>
-              <p className="text-gray-700 dark:text-gray-300">Group {student.group}</p>
+              <p className="text-gray-900 dark:text-white font-medium">
+                {student.program}
+              </p>
+              <p className="text-gray-700 dark:text-gray-300">
+                Group {student.group}
+              </p>
             </div>
           </div>
         </div>
@@ -434,11 +474,17 @@ function StudentActivitySummaryPageContent() {
 
         {/* Modules Section */}
         <div className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Modules</h3>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+            Modules
+          </h3>
 
           {/* Module Tabs */}
           {availableModules.length > 0 ? (
-            <Tabs value={selectedModule} onValueChange={setSelectedModule} className="w-full">
+            <Tabs
+              value={selectedModule}
+              onValueChange={setSelectedModule}
+              className="w-full"
+            >
               <div className="border-b border-gray-300 dark:border-gray-600">
                 {/* Horizontal scroll container for mobile */}
                 <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-800">
@@ -449,8 +495,8 @@ function StudentActivitySummaryPageContent() {
                         value={module.id}
                         className={`px-3 sm:px-4 md:px-6 py-3 min-w-[120px] sm:min-w-[140px] border-b-2 transition-colors font-bold whitespace-nowrap text-xs sm:text-sm md:text-base ${
                           selectedModule === module.id
-                            ? '!bg-blue-600 dark:!bg-blue-700 !text-white border-blue-600 dark:border-blue-500 rounded-t-lg data-[state=active]:!bg-blue-600 dark:data-[state=active]:!bg-blue-700 data-[state=active]:!text-white'
-                            : '!bg-transparent !text-gray-700 dark:!text-gray-300 hover:!text-blue-600 dark:hover:!text-blue-400 border-transparent hover:border-blue-200 dark:hover:border-blue-400 rounded-none data-[state=active]:!bg-transparent'
+                            ? "!bg-blue-600 dark:!bg-blue-700 !text-white border-blue-600 dark:border-blue-500 rounded-t-lg data-[state=active]:!bg-blue-600 dark:data-[state=active]:!bg-blue-700 data-[state=active]:!text-white"
+                            : "!bg-transparent !text-gray-700 dark:!text-gray-300 hover:!text-blue-600 dark:hover:!text-blue-400 border-transparent hover:border-blue-200 dark:hover:border-blue-400 rounded-none data-[state=active]:!bg-transparent"
                         }`}
                       >
                         {module.title}
@@ -490,7 +536,9 @@ function StudentActivitySummaryPageContent() {
             </Tabs>
           ) : (
             <div className="p-8 text-center">
-              <p className="text-gray-500 dark:text-gray-400">No modules available for this student's program.</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                No modules available for this student's program.
+              </p>
             </div>
           )}
         </div>

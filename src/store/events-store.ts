@@ -111,11 +111,7 @@ export const useEventsStore = create<{
 
       try {
         // Use the API endpoint directly
-        const response = await fetch('/api/events');
-        if (!response.ok) {
-          throw new Error('Failed to fetch events');
-        }
-        const events: Event[] = await response.json();
+        const events: Event[] = await apiFetchEvents();
 
         set(state => {
           state.events.data = events;

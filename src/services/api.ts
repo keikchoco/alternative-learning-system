@@ -1,4 +1,4 @@
-import { Student, Barangay, Module, Progress, Event } from "@/types";
+import { Student, Barangay, Module, Progress, Event, Activity } from "@/types";
 import { StorageService } from "./storage-service";
 
 // Simulated API service that loads data from JSON files with localStorage persistence
@@ -64,11 +64,11 @@ export const fetchModules = async (): Promise<Module[]> => {
 };
 
 // Load progress data with persistence
-export const fetchProgress = async (): Promise<Progress[]> => {
+export const fetchProgress = async (studentId: string): Promise<Progress[]> => {
   try {
     let progress: Progress[] = [];
 
-    const res = await fetch("/api/progress", {
+    const res = await fetch(`/api/progress?studentId=${studentId}`, {
       method: "GET",
     });
     if (res.ok) {
@@ -105,7 +105,7 @@ export const createStudent = async (
     const response = await res.json();
     const newStudent: Student = {
       ...student,
-      _id: response.data.insertedId.toString()
+      _id: response.data.insertedId.toString(),
     };
 
     console.log(
@@ -132,7 +132,7 @@ export const updateStudent = async (student: Student): Promise<Student> => {
     if (!res.ok) {
       throw new Error("Failed to update student");
     }
-    
+
     console.log(`✅ Updated student: ${student.name} (${student._id})`);
     return student;
   } catch (error) {
@@ -168,16 +168,24 @@ export const createProgress = async (
   progress: Omit<Progress, "id">
 ): Promise<Progress> => {
   try {
-    await delay(500);
+    const res = await fetch("/api/progress", {
+      method: "POST",
+      body: JSON.stringify(progress),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    // Generate a new ID
+    // Check if the response is not successful
+    if (!res.ok) {
+      throw new Error("Failed to create student");
+    }
+
+    const response = await res.json();
     const newProgress: Progress = {
       ...progress,
-      id: `progress-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: response.data.insertedId.toString(),
     };
-
-    // Persist the new progress to localStorage
-    StorageService.addProgress(newProgress);
 
     console.log(
       `✅ Created and persisted new progress record: ${newProgress.id}`
@@ -190,15 +198,33 @@ export const createProgress = async (
 };
 
 // Update an existing progress record with persistence
-export const updateProgress = async (progress: Progress): Promise<Progress> => {
+export const updateProgress = async (
+  studentId: string,
+  moduleId: string,
+  activityIndex: number,
+  activity: Activity
+): Promise<void> => {
   try {
-    await delay(500);
+    const res = await fetch("/api/progress", {
+      method: "PATCH",
+      body: JSON.stringify({
+        studentId,
+        moduleId,
+        activityIndex,
+        activity,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    // Persist the updated progress to localStorage
-    StorageService.updateProgress(progress);
+    if (!res.ok) {
+      throw new Error("Failed to update progress");
+    }
 
-    console.log(`✅ Updated and persisted progress record: ${progress.id}`);
-    return progress;
+    console.log(
+      `✅ Updated activity ${activityIndex} for student ${studentId} in module ${moduleId}`
+    );
   } catch (error) {
     console.error("Error updating progress:", error);
     throw new Error("Failed to update progress record");
@@ -206,14 +232,27 @@ export const updateProgress = async (progress: Progress): Promise<Progress> => {
 };
 
 // Delete a progress record with persistence
-export const deleteProgress = async (id: string): Promise<void> => {
+export const deleteProgress = async (
+  studentId: string,
+  moduleId: string,
+  activityIndex: number
+): Promise<void> => {
   try {
-    await delay(500);
+    const res = await fetch(`/api/progress`, {
+      method: "DELETE",
+      body: JSON.stringify({ studentId, moduleId, activityIndex }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    // Remove the progress from localStorage
-    StorageService.removeProgress(id);
+    if (!res.ok) {
+      throw new Error("Failed to delete student");
+    }
 
-    console.log(`✅ Deleted and removed progress record: ${id}`);
+    console.log(
+      `✅ Deleted and removed progress record: ${moduleId}-${activityIndex}`
+    );
   } catch (error) {
     console.error("Error deleting progress:", error);
     throw new Error("Failed to delete progress record");
@@ -223,11 +262,15 @@ export const deleteProgress = async (id: string): Promise<void> => {
 // Load events data
 export const fetchEvents = async (): Promise<Event[]> => {
   try {
-    await delay(300);
+    let events: Event[] = [];
 
-    // For development, load directly from JSON file
-    const eventsModule = await import("@/data/events.json");
-    const events: Event[] = eventsModule.default as Event[];
+    const res = await fetch("/api/events", {
+      method: "GET",
+    });
+    if (res.ok) {
+      const response = await res.json();
+      events = response as Event[];
+    }
 
     return events;
   } catch (error) {

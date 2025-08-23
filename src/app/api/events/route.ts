@@ -1,13 +1,16 @@
-import { NextResponse } from 'next/server';
-import eventsData from '@/data/events.json';
+import clientPromise from "@/lib/mongodb";
+import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    return NextResponse.json(eventsData);
-  } catch (error) {
-    console.error('Error loading events:', error);
+    const client = await clientPromise;
+    const db = client.db("main");
+    const events = await db.collection("events").find({}).toArray();
+    return NextResponse.json(events);
+  } catch (e) {
+    console.error(e);
     return NextResponse.json(
-      { error: 'Failed to load events' },
+      { success: false, error: "Failed to fetch events" },
       { status: 500 }
     );
   }

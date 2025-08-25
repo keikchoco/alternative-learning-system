@@ -70,7 +70,8 @@ export const createProgressSlice: StateCreator<
       }, false, 'progress/loadProgress');
       
       try {
-        const progress = await fetchProgress();
+        const studentId = (get().progress.filters?.studentId) || "";
+        const progress = await fetchProgress(studentId);
         
         set(state => {
           state.progress.data = progress;
@@ -134,14 +135,23 @@ export const createProgressSlice: StateCreator<
     },
     
     // Update an existing progress record
-    updateProgress: async (updatedProgress: Progress) => {
+    updateProgress: async (updatedProgress: Progress): Promise<Progress> => {
       set(state => {
         state.progress.loading = true;
         state.progress.error = null;
       }, false, 'progress/updateProgress');
       
       try {
-        const result = await apiUpdateProgress(updatedProgress);
+        const index = get().progress.data.findIndex(p => p.id === updatedProgress.id);
+        if (index === -1) {
+          throw new Error('Progress record not found');
+        }
+        const result = await apiUpdateProgress(
+          updatedProgress.id,
+          updatedProgress.studentId,
+          index,
+          updatedProgress.activities[index]
+        );
         
         set(state => {
           const index = state.progress.data.findIndex(p => p.id === updatedProgress.id);
@@ -156,8 +166,8 @@ export const createProgressSlice: StateCreator<
           state.progress.statistics = calculateProgressStatistics(state.progress.data);
           state.progress.loading = false;
         }, false, 'progress/updateProgress/success');
-        
-        return result;
+
+        return updatedProgress;
       } catch (error) {
         set(state => {
           state.progress.error = error instanceof Error ? error.message : 'Failed to update progress record';
@@ -176,7 +186,11 @@ export const createProgressSlice: StateCreator<
       }, false, 'progress/deleteProgress');
       
       try {
-        await apiDeleteProgress(id);
+        const progressRecord = get().progress.data.find(p => p.id === id);
+        if (!progressRecord) {
+          throw new Error('Progress record not found');
+        }
+        await apiDeleteProgress(id, progressRecord.studentId, progressRecord.moduleId);
         
         set(state => {
           state.progress.data = state.progress.data.filter(p => p.id !== id);
@@ -210,7 +224,7 @@ export const createProgressSlice: StateCreator<
         activities: [...progressRecord.activities, activity]
       };
       
-      return get().progress.updateProgress(updatedProgress);
+      return await get().progress.updateProgress(updatedProgress);
     },
     
     // Update an activity in a progress record
@@ -229,7 +243,7 @@ export const createProgressSlice: StateCreator<
         activities: updatedActivities
       };
 
-      return get().progress.updateProgress(updatedProgress);
+      return await get().progress.updateProgress(updatedProgress);
     },
     
     // Remove an activity from a progress record

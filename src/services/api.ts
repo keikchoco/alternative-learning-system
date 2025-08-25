@@ -50,11 +50,17 @@ export const fetchBarangays = async (): Promise<Barangay[]> => {
 // Load modules data
 export const fetchModules = async (): Promise<Module[]> => {
   try {
-    await delay(300);
+    let modules: Module[] = [];
 
-    // For development, load from JSON file
-    const modulesModule = await import("@/data/modules.json");
-    const modules: Module[] = modulesModule.default as Module[];
+    const res = await fetch("/api/modules", {
+      method: "GET",
+    });
+    if (res.ok) {
+      const response = await res.json();
+      modules = response as Module[];
+    }
+
+    console.log(`📊 Loaded ${modules.length} modules from storage`);
 
     return modules;
   } catch (error) {

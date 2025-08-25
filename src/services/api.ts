@@ -282,15 +282,25 @@ export const fetchEvents = async (): Promise<Event[]> => {
 // Create a new event
 export const createEvent = async (event: Omit<Event, "id">): Promise<Event> => {
   try {
-    await delay(500);
+    const res = await fetch("/api/events", {
+      method: "POST",
+      body: JSON.stringify(event),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    // Generate a new ID
+    // Check if the response is not successful
+    if (!res.ok) {
+      throw new Error("Failed to create event");
+    }
+
+    const response = await res.json();
     const newEvent: Event = {
       ...event,
-      id: `event-${Date.now()}`,
+      id: response.data.insertedId.toString(),
     };
 
-    // In a real app, this would be a POST request to the API
     return newEvent;
   } catch (error) {
     console.error("Error creating event:", error);
@@ -301,10 +311,23 @@ export const createEvent = async (event: Omit<Event, "id">): Promise<Event> => {
 // Update an existing event
 export const updateEvent = async (event: Event): Promise<Event> => {
   try {
-    await delay(500);
+    const res = await fetch(`/api/events`, {
+      method: "PATCH",
+      body: JSON.stringify(event),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    // In a real app, this would be a PUT request to the API
-    return event;
+    if (!res.ok) {
+      throw new Error("Failed to update event");
+    }
+
+    console.log(
+      `✅ Updated event ${event.id}`
+    );
+
+    return event
   } catch (error) {
     console.error("Error updating event:", error);
     throw new Error("Failed to update event");
@@ -312,12 +335,21 @@ export const updateEvent = async (event: Event): Promise<Event> => {
 };
 
 // Delete an event
-export const deleteEvent = async (id: string): Promise<void> => {
+export const deleteEvent = async (_id: string): Promise<void> => {
   try {
-    await delay(500);
+    const res = await fetch(`/api/events`, {
+      method: "DELETE",
+      body: JSON.stringify({ _id }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    // In a real app, this would be a DELETE request to the API
-    return;
+    if (!res.ok) {
+      throw new Error("Failed to delete event");
+    }
+
+    console.log(`✅ Deleted and removed event from storage: ${_id}`);
   } catch (error) {
     console.error("Error deleting event:", error);
     throw new Error("Failed to delete event");

@@ -44,12 +44,18 @@ class AuthService {
    * @returns Promise with auth response containing user and token
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    // Simulate minimal API delay (100ms is more realistic for a fast API)
-    await new Promise(resolve => setTimeout(resolve, 100));
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    });
+
+    let user: User = await res.json();
 
     // In a real app, this would be a POST request to /api/auth/login
     const users = this.getStoredUsers();
-    let user = users.find(u => u.email === credentials.email);
 
     // Fallback: if no users found and storage might be blocked, use test user
     if (!user && users.length === 0 && credentials.email === 'test@example.com') {

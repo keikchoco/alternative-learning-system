@@ -1,6 +1,7 @@
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
@@ -36,11 +37,20 @@ export async function POST(req: Request) {
       );
     }
 
+    const isPasswordValid = bcrypt.compareSync(password, userData[0].password);
+
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        { success: false, error: "Invalid Password" },
+        { status: 401 }
+      );
+    }
+
     return NextResponse.json({ success: true, data: userData[0] });
   } catch (error) {
     console.error("Error inserting user:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to insert user" },
+      { success: false, error: "Failed to Authenticate User" },
       { status: 500 }
     );
   }

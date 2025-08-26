@@ -42,7 +42,7 @@ export const useAuthStore = create<{
         const isAuthenticated = authService.isAuthenticated();
 
         console.log('🔍 Auth initialization results:', {
-          user: user ? { id: user.id, email: user.email, role: user.role } : null,
+          user: user ? { id: user._id, email: user.email, role: user.role } : null,
           token: token ? `${token.substring(0, 20)}...` : null,
           isAuthenticated
         });
@@ -81,7 +81,7 @@ export const useAuthStore = create<{
         const response = await authService.login(credentials);
 
         console.log('✅ Login successful:', {
-          user: { id: response.user.id, email: response.user.email, role: response.user.role },
+          user: { id: response.user._id, email: response.user.email, role: response.user.role },
           token: response.token ? `${response.token.substring(0, 20)}...` : null
         });
 
@@ -114,13 +114,6 @@ export const useAuthStore = create<{
 
       try {
         const response = await authService.register(userData);
-
-        set((state) => {
-          state.auth.user = response.user;
-          state.auth.token = response.token;
-          state.auth.isAuthenticated = true;
-          state.auth.isLoading = false;
-        });
 
         return response;
       } catch (error) {

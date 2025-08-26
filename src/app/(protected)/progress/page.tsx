@@ -34,7 +34,7 @@ export default function ProgressPage() {
 
   // Filter barangays based on user role
   const filteredBarangays = user?.role === 'admin' && user?.assignedBarangayId
-    ? barangays.filter(b => b.id === user.assignedBarangayId)
+    ? barangays.filter(b => b._id === user.assignedBarangayId)
     : barangays;
 
   return (

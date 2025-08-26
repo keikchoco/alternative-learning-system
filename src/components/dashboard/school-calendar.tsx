@@ -389,7 +389,7 @@ export function SchoolCalendar() {
               onMouseEnter={handleTooltipMouseEnter}
             >
               {getEventsByDate(hoveredDate).map((event, index) => (
-                <div key={event.id} className={`p-2 rounded-md border ${getEventTypeColor(event.type)}`}>
+                <div key={event._id} className={`p-2 rounded-md border ${getEventTypeColor(event.type)}`}>
                   <div className="flex items-start justify-between mb-1">
                     <h4 className="font-semibold text-sm leading-tight">{event.title}</h4>
                     <span className={`event-type-badge text-xs px-2 py-1 rounded-full font-medium ${

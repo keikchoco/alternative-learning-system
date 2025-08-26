@@ -9,7 +9,7 @@ export type EventStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
 
 // Barangay Interface
 export interface Barangay {
-  id: string;
+  _id: string;
   name: string;
   address?: string;
   latitude?: number;
@@ -18,7 +18,7 @@ export interface Barangay {
 
 // Event Interface
 export interface Event {
-  id: string;
+  _id: string;
   title: string;
   date: string; // ISO date string (YYYY-MM-DD)
   time: string; // Time range (e.g., "8:00 AM - 12:00 PM")
@@ -56,7 +56,7 @@ export interface PredefinedActivity {
 
 // Module Interface
 export interface Module {
-  id: string;
+  _id: string;
   title: string;
   levels: string[];
   predefinedActivities?: PredefinedActivity[];
@@ -74,7 +74,7 @@ export interface Activity {
 
 // Progress Interface
 export interface Progress {
-  id: string;
+  _id: string;
   studentId: string;
   barangayId: string;
   moduleId: string;

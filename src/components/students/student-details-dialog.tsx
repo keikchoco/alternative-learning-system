@@ -26,7 +26,7 @@ export function StudentDetailsDialog({
 }: StudentDetailsDialogProps) {
   if (!student) return null;
 
-  const barangay = barangays.find(b => b.id === student.barangayId);
+  const barangay = barangays.find(b => b._id === student.barangayId);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {

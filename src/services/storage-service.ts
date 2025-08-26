@@ -192,7 +192,7 @@ export class StorageService {
   static updateProgress(updatedProgress: Progress): void {
     const existingProgress = this.loadProgress() || [];
     const updatedProgressList = existingProgress.map(progress =>
-      progress.id === updatedProgress.id ? updatedProgress : progress
+      progress._id === updatedProgress._id ? updatedProgress : progress
     );
     this.saveProgress(updatedProgressList);
   }
@@ -202,7 +202,7 @@ export class StorageService {
    */
   static removeProgress(progressId: string): void {
     const existingProgress = this.loadProgress() || [];
-    const updatedProgress = existingProgress.filter(progress => progress.id !== progressId);
+    const updatedProgress = existingProgress.filter(progress => progress._id !== progressId);
     this.saveProgress(updatedProgress);
   }
 
@@ -255,35 +255,6 @@ export class StorageService {
   }
 
   /**
-   * Initialize storage with static data if no persisted data exists
-   */
-  static async initializeFromStaticData(): Promise<void> {
-    try {
-      if (!this.hasBarangayData()) {
-        console.log('📥 Initializing barangays from static data...');
-        const barangaysModule = await import('@/data/barangays.json');
-        const barangays: Barangay[] = barangaysModule.default as Barangay[];
-        this.saveBarangays(barangays);
-      }
-
-      if (!this.hasProgressData()) {
-        console.log('📥 Initializing progress from static data...');
-        const progressModule = await import('@/data/progress.json');
-        const progress: Progress[] = progressModule.default as Progress[];
-        this.saveProgress(progress);
-      }
-
-      // Update last sync time
-      localStorage.setItem(STORAGE_KEYS.LAST_SYNC, new Date().toISOString());
-      
-      console.log('✅ Storage initialization complete');
-    } catch (error) {
-      console.error('❌ Failed to initialize storage from static data:', error);
-      throw error;
-    }
-  }
-
-  /**
    * Validate storage integrity
    */
   static validateStorage(): { isValid: boolean; issues: string[] } {
@@ -310,7 +281,7 @@ export class StorageService {
           issues.push('Barangays data is not an array');
         } else if (barangays.length > 0) {
           const firstBarangay = barangays[0];
-          if (!firstBarangay.id || !firstBarangay.name) {
+          if (!firstBarangay._id || !firstBarangay.name) {
             issues.push('Barangay data structure is invalid');
           }
         }

@@ -116,16 +116,16 @@ export const useStudentStore = create<{
           if (!state.selectedBarangay && barangays.length > 0) {
             if (user?.role === 'admin' && user?.assignedBarangayId) {
               // For Regular Admin: select their assigned barangay
-              const assignedBarangay = barangays.find(b => b.id === user.assignedBarangayId);
+              const assignedBarangay = barangays.find(b => b._id === user.assignedBarangayId);
               if (assignedBarangay) {
-                state.selectedBarangay = assignedBarangay.id;
+                state.selectedBarangay = assignedBarangay._id;
               } else {
                 // Fallback to first barangay if assigned barangay not found
-                state.selectedBarangay = barangays[0].id;
+                state.selectedBarangay = barangays[0]._id;
               }
             } else {
               // For Master Admin or no user: select first barangay
-              state.selectedBarangay = barangays[0].id;
+              state.selectedBarangay = barangays[0]._id;
             }
           }
         });

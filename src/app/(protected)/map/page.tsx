@@ -75,7 +75,7 @@ export default function MapPage() {
 
   // Filter barangays based on user role
   const filteredBarangays = user?.role === 'admin' && user?.assignedBarangayId
-    ? barangays.filter(b => b.id === user.assignedBarangayId)
+    ? barangays.filter(b => b._id === user.assignedBarangayId)
     : barangays;
 
   // Calculate enrollment statistics for each barangay
@@ -83,8 +83,8 @@ export default function MapPage() {
     const stats: Record<string, { total: number; active: number }> = {};
 
     barangays.forEach(barangay => {
-      const barangayStudents = students.data.filter(student => student.barangayId === barangay.id);
-      stats[barangay.id] = {
+      const barangayStudents = students.data.filter(student => student.barangayId === barangay._id);
+      stats[barangay._id] = {
         total: barangayStudents.length,
         active: barangayStudents.filter(student => student.status === 'active').length
       };

@@ -78,7 +78,7 @@ export function InteractiveMap({
 
   // Find the selected barangay or default to center of Indang, Cavite
   const selectedBarangayData = useMemo(() =>
-    selectedBarangay ? barangays.find(b => b.id === selectedBarangay) : null,
+    selectedBarangay ? barangays.find(b => b._id === selectedBarangay) : null,
     [selectedBarangay, barangays]
   );
 
@@ -194,11 +194,11 @@ export function InteractiveMap({
         {barangays.map((barangay) => {
           if (!barangay.latitude || !barangay.longitude) return null;
 
-          const stats = enrollmentStats[barangay.id] || { total: 0, active: 0 };
+          const stats = enrollmentStats[barangay._id] || { total: 0, active: 0 };
 
           return (
             <Marker
-              key={barangay.id}
+              key={barangay._id}
               position={[barangay.latitude, barangay.longitude]}
               icon={blueIcon}
             >

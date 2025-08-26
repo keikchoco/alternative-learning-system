@@ -20,7 +20,7 @@ import { ActivityTable } from "@/components/progress/activity-table";
 import { ActivityTableSkeleton } from "@/components/progress/activity-table-skeleton";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
-import { deleteProgress, fetchProgress, updateProgress } from "@/services/api";
+import { deleteProgress, fetchModules, fetchProgress, updateProgress } from "@/services/api";
 import { set } from "zod";
 
 // Custom hook to safely manage store subscriptions
@@ -92,9 +92,6 @@ function StudentActivitySummaryPageContent() {
   const router = useRouter();
   const studentId = params.studentId as string; // This is the LRN
 
-  // Component render tracking (remove in production)
-  // console.log('🔄 StudentActivitySummaryPageContent render', { studentId });
-
   // Use the stable store data hook to prevent infinite loops
   const {
     modules,
@@ -144,7 +141,6 @@ function StudentActivitySummaryPageContent() {
         setIsInitialLoading(true);
 
         // Load data from progress store (main store actions are not available)
-
         if (student) {
           const res = await fetchProgress(student.lrn);
           setStudentProgress(res);
@@ -172,17 +168,11 @@ function StudentActivitySummaryPageContent() {
   const emptyAvailableModules = useMemo(() => [], []);
 
   // Memoize student progress to prevent recalculation
-  const studentProgressRecords = useMemo(() => {
+  const studentProgressRecords = useMemo(async () => {
     if (student) {
       // First try store data
-      let progressRecords = progress.filter((p) => p.studentId === student.lrn);
-
-      // If no progress in store, use static data as fallback
-      if (progressRecords.length === 0) {
-        progressRecords = progressData.filter(
-          (p) => p.studentId === student.lrn
-        ) as Progress[];
-      }
+      const progressData = await fetchProgress(student.lrn);
+      let progressRecords = progressData.filter((p) => p.studentId === student.lrn);
 
       return progressRecords;
     }
@@ -190,15 +180,10 @@ function StudentActivitySummaryPageContent() {
   }, [student, progress, emptyStudentProgress]);
 
   // Memoize available modules to prevent recalculation
-  const availableModulesData = useMemo(() => {
+  const availableModulesData = useMemo(async () => {
     if (student) {
-      // First try store data
-      let modulesList = modules;
-
-      // If no modules in store, use static data as fallback
-      if (modulesList.length === 0) {
-        modulesList = modulesData as Module[];
-      }
+      const res = await fetchModules();
+      let modulesList = res;
 
       return modulesList.filter(
         (module) =>
@@ -211,18 +196,26 @@ function StudentActivitySummaryPageContent() {
 
   // Update state when data changes
   useEffect(() => {
-    setStudentProgress(studentProgressRecords);
+    (async () => {
+      const records = await studentProgressRecords;
+      setStudentProgress(records);
+    })();
   }, [studentProgressRecords]);
 
   useEffect(() => {
-    setAvailableModules(availableModulesData);
+    (async () => {
+      setAvailableModules(await availableModulesData);
+    })();
   }, [availableModulesData]);
 
   // Set first available module as selected if none selected
   useEffect(() => {
-    if (!selectedModule && availableModulesData.length > 0) {
-      setSelectedModule(availableModulesData[0].id);
-    }
+    (async () => {
+      const modulesArr = await availableModulesData;
+      if (!selectedModule && modulesArr.length > 0) {
+        setSelectedModule(modulesArr[0]._id);
+      }
+    })();
   }, [selectedModule, availableModulesData]);
 
   // Handle back navigation
@@ -316,7 +309,6 @@ function StudentActivitySummaryPageContent() {
   const handleActivityUpdate = useCallback(
     async (activityIndex: number, activity: Activity) => {
       try {
-        console.log("Updating activity:", activity);
         await updateProgress(
           studentId,
           selectedModule,
@@ -491,10 +483,10 @@ function StudentActivitySummaryPageContent() {
                   <TabsList className="w-full !bg-transparent rounded-none gap-0 p-0 justify-start">
                     {availableModules.map((module) => (
                       <TabsTrigger
-                        key={module.id}
-                        value={module.id}
+                        key={module._id}
+                        value={module._id}
                         className={`px-3 sm:px-4 md:px-6 py-3 min-w-[120px] sm:min-w-[140px] border-b-2 transition-colors font-bold whitespace-nowrap text-xs sm:text-sm md:text-base ${
-                          selectedModule === module.id
+                          selectedModule === module._id
                             ? "!bg-blue-600 dark:!bg-blue-700 !text-white border-blue-600 dark:border-blue-500 rounded-t-lg data-[state=active]:!bg-blue-600 dark:data-[state=active]:!bg-blue-700 data-[state=active]:!text-white"
                             : "!bg-transparent !text-gray-700 dark:!text-gray-300 hover:!text-blue-600 dark:hover:!text-blue-400 border-transparent hover:border-blue-200 dark:hover:border-blue-400 rounded-none data-[state=active]:!bg-transparent"
                         }`}
@@ -508,7 +500,7 @@ function StudentActivitySummaryPageContent() {
 
               {/* Module Content */}
               {availableModules.map((module) => (
-                <TabsContent key={module.id} value={module.id} className="mt-0">
+                <TabsContent key={module._id} value={module._id} className="mt-0">
                   <div className="p-0">
                     {progressLoading ? (
                       <ActivityTableSkeleton />
@@ -517,7 +509,7 @@ function StudentActivitySummaryPageContent() {
                         activities={currentModuleProgress?.activities || []}
                         moduleTitle={module.title}
                         studentId={studentId}
-                        moduleId={module.id}
+                        moduleId={module._id}
                         onActivityUpdate={handleActivityUpdate}
                         onActivityDelete={handleActivityDelete}
                         // Student navigation props

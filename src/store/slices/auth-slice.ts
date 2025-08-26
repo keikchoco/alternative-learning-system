@@ -76,13 +76,6 @@ export const createAuthSlice: StateCreator<
       try {
         const response = await authService.register(userData);
         
-        set(state => {
-          state.auth.user = response.user;
-          state.auth.token = response.token;
-          state.auth.isAuthenticated = true;
-          state.auth.isLoading = false;
-        }, false, 'auth/register/success');
-        
         return response;
       } catch (error) {
         set(state => {

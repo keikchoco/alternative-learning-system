@@ -159,17 +159,17 @@ export const useProgressStore = create<{
             if (user?.role === "admin" && user?.assignedBarangayId) {
               // For Regular Admin: select their assigned barangay
               const assignedBarangay = barangaysData.find(
-                (b) => b.id === user.assignedBarangayId
+                (b) => b._id === user.assignedBarangayId
               );
               if (assignedBarangay) {
-                state.selectedBarangay = assignedBarangay.id;
+                state.selectedBarangay = assignedBarangay._id;
               } else {
                 // Fallback to first barangay if assigned barangay not found
-                state.selectedBarangay = barangaysData[0].id;
+                state.selectedBarangay = barangaysData[0]._id;
               }
             } else {
               // For Master Admin or no user: select first barangay
-              state.selectedBarangay = barangaysData[0].id;
+              state.selectedBarangay = barangaysData[0]._id;
             }
           }
         });
@@ -361,7 +361,7 @@ export const useProgressStore = create<{
         // Update the progress record in the store
         set((state) => {
           const index = state.progress.data.findIndex(
-            (p) => p.id === progressRecord.id
+            (p) => p._id === progressRecord._id
           );
           if (index !== -1) {
             state.progress.data[index] = updatedProgress;
@@ -383,7 +383,7 @@ export const useProgressStore = create<{
         await Promise.all([
           get().fetchStudents(),
           get().fetchBarangays(user),
-          get().fetchProgress(user?.id || ""),
+          get().fetchProgress(user?._id || ""),
         ]);
       } catch (error) {
         console.error(

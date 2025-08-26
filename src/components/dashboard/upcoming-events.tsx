@@ -111,7 +111,7 @@ export function UpcomingEvents() {
                 </div>
                 <div className="space-y-2 sm:space-y-3">
                   {dateEvents.map((event) => (
-                    <div key={event.id}>
+                    <div key={event._id}>
                       <div className="flex items-center space-x-2 mb-1 sm:mb-2">
                         <div className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full ${getEventTypeColor(event.type)}`}></div>
                         <span className="font-bold text-xs sm:text-sm text-gray-900 dark:text-white">{event.time}</span>

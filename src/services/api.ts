@@ -190,11 +190,11 @@ export const createProgress = async (
     const response = await res.json();
     const newProgress: Progress = {
       ...progress,
-      id: response.data.insertedId.toString(),
+      _id: response.data.insertedId.toString(),
     };
 
     console.log(
-      `✅ Created and persisted new progress record: ${newProgress.id}`
+      `✅ Created and persisted new progress record: ${newProgress._id}`
     );
     return newProgress;
   } catch (error) {
@@ -304,7 +304,7 @@ export const createEvent = async (event: Omit<Event, "id">): Promise<Event> => {
     const response = await res.json();
     const newEvent: Event = {
       ...event,
-      id: response.data.insertedId.toString(),
+      _id: response.data.insertedId.toString(),
     };
 
     return newEvent;
@@ -330,7 +330,7 @@ export const updateEvent = async (event: Event): Promise<Event> => {
     }
 
     console.log(
-      `✅ Updated event ${event.id}`
+      `✅ Updated event ${event._id}`
     );
 
     return event

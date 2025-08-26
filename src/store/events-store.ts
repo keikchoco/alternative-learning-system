@@ -181,7 +181,7 @@ export const useEventsStore = create<{
         const result = await apiUpdateEvent(updatedEvent);
 
         set(state => {
-          const index = state.events.data.findIndex(e => e.id === updatedEvent.id);
+          const index = state.events.data.findIndex(e => e._id === updatedEvent._id);
           if (index !== -1) {
             state.events.data[index] = result;
             state.events.filteredData = filterEvents(state.events.data, state.events.filters);
@@ -211,7 +211,7 @@ export const useEventsStore = create<{
         await apiDeleteEvent(id);
 
         set(state => {
-          state.events.data = state.events.data.filter(e => e.id !== id);
+          state.events.data = state.events.data.filter(e => e._id !== id);
           state.events.filteredData = filterEvents(state.events.data, state.events.filters);
           state.events.statistics = calculateEventStatistics(state.events.data);
           state.events.loading = false;

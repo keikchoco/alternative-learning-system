@@ -47,7 +47,7 @@ interface StudentFormProps {
 export function StudentForm({ student, barangays, user, onSubmit, onCancel, isSubmitting = false }: StudentFormProps) {
   // Filter barangays based on user role - Regular Admin can only see their assigned barangay
   const filteredBarangays = user?.role === 'admin' && user?.assignedBarangayId
-    ? barangays.filter(b => b.id === user.assignedBarangayId)
+    ? barangays.filter(b => b._id === user.assignedBarangayId)
     : barangays;
 
   // Initialize form with React Hook Form and Zod validation
@@ -201,7 +201,7 @@ export function StudentForm({ student, barangays, user, onSubmit, onCancel, isSu
                   </FormControl>
                   <SelectContent>
                     {filteredBarangays.map(barangay => (
-                      <SelectItem key={barangay.id} value={barangay.id}>
+                      <SelectItem key={barangay._id} value={barangay._id}>
                         {barangay.name}
                       </SelectItem>
                     ))}

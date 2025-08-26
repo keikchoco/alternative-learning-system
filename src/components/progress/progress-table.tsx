@@ -56,7 +56,7 @@ export function ProgressTable({
 
   // Get barangay name by ID
   const getBarangayName = (barangayId: string) => {
-    const barangay = barangays.find(b => b.id === barangayId);
+    const barangay = barangays.find(b => b._id === barangayId);
     return barangay ? barangay.name : 'Unknown';
   };
 

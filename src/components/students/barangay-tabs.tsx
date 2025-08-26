@@ -20,7 +20,7 @@ export function BarangayTabs({
   }
 
   // Use the first barangay as default if none selected
-  const currentSelection = selectedBarangay || barangays[0]?.id;
+  const currentSelection = selectedBarangay || barangays[0]?._id;
 
   return (
     <Tabs
@@ -34,10 +34,10 @@ export function BarangayTabs({
           <TabsList className="w-full !bg-transparent rounded-none gap-0 p-0 justify-start">
             {barangays.map((barangay) => (
               <TabsTrigger
-                key={barangay.id}
-                value={barangay.id}
+                key={barangay._id}
+                value={barangay._id}
                 className={`px-4 sm:px-6 py-3 min-w-[100px] sm:min-w-[120px] border-b-2 transition-colors font-bold whitespace-nowrap text-sm sm:text-base ${
-                  currentSelection === barangay.id
+                  currentSelection === barangay._id
                     ? '!bg-blue-600 dark:!bg-blue-700 !text-white border-blue-600 dark:border-blue-500 rounded-t-lg data-[state=active]:!bg-blue-600 dark:data-[state=active]:!bg-blue-700 data-[state=active]:!text-white'
                     : '!bg-transparent !text-gray-700 dark:!text-gray-300 hover:!text-blue-600 dark:hover:!text-blue-400 border-transparent hover:border-blue-200 dark:hover:border-blue-400 rounded-none data-[state=active]:!bg-transparent'
                 }`}

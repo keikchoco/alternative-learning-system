@@ -142,19 +142,19 @@ export const createProgressSlice: StateCreator<
       }, false, 'progress/updateProgress');
       
       try {
-        const index = get().progress.data.findIndex(p => p.id === updatedProgress.id);
+        const index = get().progress.data.findIndex(p => p.id === updatedProgress._id);
         if (index === -1) {
           throw new Error('Progress record not found');
         }
         const result = await apiUpdateProgress(
-          updatedProgress.id,
+          updatedProgress._id,
           updatedProgress.studentId,
           index,
           updatedProgress.activities[index]
         );
         
         set(state => {
-          const index = state.progress.data.findIndex(p => p.id === updatedProgress.id);
+          const index = state.progress.data.findIndex(p => p.id === updatedProgress._id);
           if (index !== -1) {
             state.progress.data[index] = result;
           }

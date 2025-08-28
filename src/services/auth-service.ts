@@ -15,20 +15,8 @@ const ASSIGNED_BARANGAY_KEY = "als_assigned_barangay";
 // In-memory fallback for when storage is blocked
 let memoryStorage: Record<string, string> = {};
 
-/**
- * Mock Authentication Service
- *
- * This service simulates API calls for authentication.
- * In a real application, these methods would make actual API requests.
- *
- * For future implementation with a real backend:
- * 1. Replace the localStorage operations with fetch/axios calls
- * 2. Update the return types to match the actual API responses
- * 3. Add proper error handling for API-specific errors
- */
 class AuthService {
   /**
-   * Simulates a login API call
    *
    * @param credentials User login credentials
    * @returns Promise with auth response containing user and token
@@ -49,7 +37,7 @@ class AuthService {
     }
 
     let user: User = response.data;
-    console.log(response);
+
     // Generate a mock token
     const token = `mock-jwt-token-${Date.now()}`;
 

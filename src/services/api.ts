@@ -1,23 +1,21 @@
 import { Student, Barangay, Module, Progress, Event, Activity } from "@/types";
-import { StorageService } from "./storage-service";
-
-// Simulated API service that loads data from JSON files with localStorage persistence
-// In a real application, this would be replaced with actual API calls to MongoDB
-
-// Helper function to simulate API delay
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Load students data
 export const fetchStudents = async (): Promise<Student[]> => {
   try {
     let students: Student[] = [];
+
+    // Fetch students from API
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/students`, {
       method: "GET",
     });
+
+    // Check if the response is successful
     if (res.ok) {
       const response = await res.json();
       students = response as Student[];
     }
+
     console.log(`📊 Loaded ${students?.length} students from storage`);
     return students;
   } catch (error) {
@@ -31,9 +29,12 @@ export const fetchBarangays = async (): Promise<Barangay[]> => {
   try {
     let barangays: Barangay[] = [];
 
+    // Fetch barangays from API
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/barangays`, {
       method: "GET",
     });
+
+    // Check if the response is successful
     if (res.ok) {
       const response = await res.json();
       barangays = response as Barangay[];
@@ -52,9 +53,12 @@ export const fetchModules = async (): Promise<Module[]> => {
   try {
     let modules: Module[] = [];
 
+    // Fetch modules from API
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/modules`, {
       method: "GET",
     });
+
+    // check if the response is successful
     if (res.ok) {
       const response = await res.json();
       modules = response as Module[];
@@ -74,9 +78,12 @@ export const fetchProgress = async (studentId: string): Promise<Progress[]> => {
   try {
     let progress: Progress[] = [];
 
+    // Fetch progress from API
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/progress?studentId=${studentId}`, {
       method: "GET",
     });
+
+    // check if the response is successful
     if (res.ok) {
       const response = await res.json();
       progress = response as Progress[];
@@ -90,7 +97,7 @@ export const fetchProgress = async (studentId: string): Promise<Progress[]> => {
   }
 };
 
-// Create a new student with persistence
+// Create a new student
 export const createStudent = async (
   student: Omit<Student, "_id">
 ): Promise<Student> => {
@@ -270,9 +277,12 @@ export const fetchEvents = async (): Promise<Event[]> => {
   try {
     let events: Event[] = [];
 
+    // Fetch events from API
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/events`, {
       method: "GET",
     });
+
+    // check if the response is successful
     if (res.ok) {
       const response = await res.json();
       events = response as Event[];

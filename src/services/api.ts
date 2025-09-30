@@ -11,7 +11,7 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export const fetchStudents = async (): Promise<Student[]> => {
   try {
     let students: Student[] = [];
-    const res = await fetch("/api/students", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/students`, {
       method: "GET",
     });
     if (res.ok) {
@@ -31,7 +31,7 @@ export const fetchBarangays = async (): Promise<Barangay[]> => {
   try {
     let barangays: Barangay[] = [];
 
-    const res = await fetch("/api/barangays", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/barangays`, {
       method: "GET",
     });
     if (res.ok) {
@@ -52,7 +52,7 @@ export const fetchModules = async (): Promise<Module[]> => {
   try {
     let modules: Module[] = [];
 
-    const res = await fetch("/api/modules", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/modules`, {
       method: "GET",
     });
     if (res.ok) {
@@ -74,7 +74,7 @@ export const fetchProgress = async (studentId: string): Promise<Progress[]> => {
   try {
     let progress: Progress[] = [];
 
-    const res = await fetch(`/api/progress?studentId=${studentId}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/progress?studentId=${studentId}`, {
       method: "GET",
     });
     if (res.ok) {
@@ -95,7 +95,7 @@ export const createStudent = async (
   student: Omit<Student, "_id">
 ): Promise<Student> => {
   try {
-    const res = await fetch("/api/students", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/students`, {
       method: "POST",
       body: JSON.stringify(student),
       headers: {
@@ -127,7 +127,7 @@ export const createStudent = async (
 // Update an existing student with persistence
 export const updateStudent = async (student: Student): Promise<Student> => {
   try {
-    const res = await fetch("/api/students", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/students`, {
       method: "PATCH",
       body: JSON.stringify(student),
       headers: {
@@ -150,7 +150,7 @@ export const updateStudent = async (student: Student): Promise<Student> => {
 // Delete a student with persistence
 export const deleteStudent = async (_id: string): Promise<void> => {
   try {
-    const res = await fetch(`/api/students`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/students`, {
       method: "DELETE",
       body: JSON.stringify({ _id }),
       headers: {
@@ -174,7 +174,7 @@ export const createProgress = async (
   progress: Omit<Progress, "id">
 ): Promise<Progress> => {
   try {
-    const res = await fetch("/api/progress", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/progress`, {
       method: "POST",
       body: JSON.stringify(progress),
       headers: {
@@ -211,7 +211,7 @@ export const updateProgress = async (
   activity: Activity
 ): Promise<void> => {
   try {
-    const res = await fetch("/api/progress", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/progress`, {
       method: "PATCH",
       body: JSON.stringify({
         studentId,
@@ -244,7 +244,7 @@ export const deleteProgress = async (
   activityIndex: number
 ): Promise<void> => {
   try {
-    const res = await fetch(`/api/progress`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/progress`, {
       method: "DELETE",
       body: JSON.stringify({ studentId, moduleId, activityIndex }),
       headers: {
@@ -270,7 +270,7 @@ export const fetchEvents = async (): Promise<Event[]> => {
   try {
     let events: Event[] = [];
 
-    const res = await fetch("/api/events", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/events`, {
       method: "GET",
     });
     if (res.ok) {
@@ -288,7 +288,7 @@ export const fetchEvents = async (): Promise<Event[]> => {
 // Create a new event
 export const createEvent = async (event: Omit<Event, "id">): Promise<Event> => {
   try {
-    const res = await fetch("/api/events", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/events`, {
       method: "POST",
       body: JSON.stringify(event),
       headers: {
@@ -317,7 +317,7 @@ export const createEvent = async (event: Omit<Event, "id">): Promise<Event> => {
 // Update an existing event
 export const updateEvent = async (event: Event): Promise<Event> => {
   try {
-    const res = await fetch(`/api/events`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/events`, {
       method: "PATCH",
       body: JSON.stringify(event),
       headers: {
@@ -329,11 +329,9 @@ export const updateEvent = async (event: Event): Promise<Event> => {
       throw new Error("Failed to update event");
     }
 
-    console.log(
-      `✅ Updated event ${event._id}`
-    );
+    console.log(`✅ Updated event ${event._id}`);
 
-    return event
+    return event;
   } catch (error) {
     console.error("Error updating event:", error);
     throw new Error("Failed to update event");
@@ -343,7 +341,7 @@ export const updateEvent = async (event: Event): Promise<Event> => {
 // Delete an event
 export const deleteEvent = async (_id: string): Promise<void> => {
   try {
-    const res = await fetch(`/api/events`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/events`, {
       method: "DELETE",
       body: JSON.stringify({ _id }),
       headers: {

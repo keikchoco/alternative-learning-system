@@ -34,7 +34,7 @@ class AuthService {
    * @returns Promise with auth response containing user and token
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const res = await fetch("/api/auth/login", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -116,7 +116,7 @@ class AuthService {
     };
 
     // Save user to MongoDB Database
-    const res = await fetch("/api/auth/register", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -199,7 +199,7 @@ class AuthService {
   async getStoredUsers(): Promise<User[]> {
     try {
       // Replace with actual API endpoint for fetching users if needed
-      const res = await fetch("/api/auth/users", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -226,7 +226,7 @@ class AuthService {
    */
   async updateStoredUser(updatedUser: Partial<User>): Promise<boolean> {
     try {
-      const res = await fetch("/api/auth/users", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/users`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -258,7 +258,7 @@ class AuthService {
    */
   async deleteStoredUser(userId: string): Promise<boolean> {
     try {
-      const res = await fetch("/api/auth/users", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/users`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
